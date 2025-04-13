@@ -99,7 +99,7 @@ export class AuthService extends BaseHttpService{
         address: string;
         bornDate: string;
     }): Observable<any> {
-        return this._httpClient.post(`${this.apiUrl}/User/Cadastrar`, user).pipe(
+        return this._httpClient.post(`${this.apiUrl}/user`, user).pipe(
             switchMap((response: any) => {
                 return of(response);
             }),
