@@ -3,26 +3,27 @@ import { inject, Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import { BaseHttpService } from '../base/base-http.service';
 
 @Injectable({ providedIn: 'root' })
-export class AuthService {
+export class AuthService extends BaseHttpService{
     private _authenticated: boolean = false;
     private _httpClient = inject(HttpClient);
     private _userService = inject(UserService);
-    private apiUrl = 'https://localhost:44389/api';
     private rememberMe: boolean = false;
 
-    constructor() {
+    constructor(http: HttpClient) {
+        super(http);
         this.rememberMe = localStorage.getItem('rememberMe') === 'true';
     }
 
     set accessToken(token: string) {
         if (this.rememberMe) {
             localStorage.setItem('accessToken', token);
-            sessionStorage.removeItem('accessToken'); // Remove caso exista
+            sessionStorage.removeItem('accessToken');
         } else {
             sessionStorage.setItem('accessToken', token);
-            localStorage.removeItem('accessToken'); // Remove caso exista
+            localStorage.removeItem('accessToken');
         }
     }
 
