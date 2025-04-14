@@ -19,7 +19,7 @@
                 <a
                     class="ml-1 text-primary-500 hover:underline"
                     [routerLink]="['/pages/authentication/sign-in']"
-                    >Entrar
+                    >Login
                 </a>
             </div>
 
@@ -49,14 +49,14 @@
 
                 <!-- Campo de Email -->
                 <mat-form-field class="w-full">
-                    <mat-label>Endereço de email</mat-label>
+                    <mat-label>Endereço de e-mail</mat-label>
                     <input id="email" matInput [formControlName]="'email'" />
                     @if (signUpForm.get('email').hasError('required')) {
-                        <mat-error> O endereço de email é obrigatório </mat-error>
+                        <mat-error> O endereço de e-mail é obrigatório </mat-error>
                     }
                     @if (signUpForm.get('email').hasError('email')) {
                         <mat-error>
-                            Por favor, insira um endereço de email válido
+                            Por favor, insira um endereço de e-mail válido
                         </mat-error>
                     }
                 </mat-form-field>

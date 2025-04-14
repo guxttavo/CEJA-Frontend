@@ -32,12 +32,12 @@ export class AuthService extends BaseHttpService{
     }
 
     forgotPassword(email: string): Observable<any> {
-        return this._httpClient.post(`${this.apiUrl}/api/auth/forgot-password`, email);
-    }
+        return this._httpClient.post(`${this.apiUrl}/auth/forgot-password`, { email });
+    }    
 
-    resetPassword(password: string): Observable<any> {
-        return this._httpClient.post('api/auth/reset-password', password);
-    }
+    resetPassword(data: { email: string; token: string; newPassword: string }): Observable<any> {
+        return this._httpClient.post(`${this.apiUrl}/auth/reset-password`, data);
+    }      
 
     signIn(credentials: { email: string; password: string; rememberMe: boolean }): Observable<any> {
         if (this._authenticated) {
