@@ -16,6 +16,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:user-group',
                 link: '/admin/alunos',
             },
+            {
+                id: 'admin.turmas',
+                title: 'Turmas',
+                type: 'basic',
+                icon: 'heroicons_outline:user-group',
+                link: '/admin/turmas',
+            }
         ]
     },
     {

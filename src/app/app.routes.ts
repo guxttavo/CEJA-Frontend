@@ -82,6 +82,7 @@ export const appRoutes: Route[] = [
             // Admin
             {path: 'admin', children: [
                 {path: 'alunos', loadChildren: () => import('app/modules/admin/apps/alunos/alunos.routes')},
+                {path: 'turmas', loadChildren: () => import('app/modules/admin/apps/turmas/turma.routes')},
             ]},
 
             // Dashboards
