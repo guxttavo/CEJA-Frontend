@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Turma } from './turma.types';
 import { TurmaService } from './turma.service';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-turmas',
+  selector: 'turmas',
+  templateUrl: './turmas.component.html',
   standalone: true,
-  imports: [],
-  templateUrl: './turmas.component.html'
+  imports: [RouterOutlet],
 })
 export class TurmasComponent {
   turmas$: Observable<Turma[]>;

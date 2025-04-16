@@ -40,7 +40,6 @@ export class AlunosService {
             })
         );
     }
-    
 
     searchAlunos(query: string): Observable<Aluno[]> {
         return this._httpClient.get<Aluno[]>('api/apps/alunos/search', { params: { query } }).pipe(

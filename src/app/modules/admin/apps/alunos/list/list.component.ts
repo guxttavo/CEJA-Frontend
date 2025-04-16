@@ -126,30 +126,30 @@ export class AlunosListComponent implements OnInit, OnDestroy {
     
     // );
 
-    //     this._fuseMediaWatcherService.onMediaChange$
-    //         .pipe(takeUntil(this._unsubscribeAll))
-    //         .subscribe(({ matchingAliases }) => {
-    //             if (matchingAliases.includes('lg')) {
-    //                 this.drawerMode = 'side';
-    //             } else {
-    //                 this.drawerMode = 'over';
-    //             }
+        this._fuseMediaWatcherService.onMediaChange$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(({ matchingAliases }) => {
+                if (matchingAliases.includes('lg')) {
+                    this.drawerMode = 'side';
+                } else {
+                    this.drawerMode = 'over';
+                }
 
-    //             this._changeDetectorRef.markForCheck();
-    //         });
+                this._changeDetectorRef.markForCheck();
+            });
 
-    //     fromEvent(this._document, 'keydown')
-    //         .pipe(
-    //             takeUntil(this._unsubscribeAll),
-    //             filter<KeyboardEvent>(
-    //                 (event) =>
-    //                     (event.ctrlKey === true || event.metaKey) && // Ctrl or Cmd
-    //                     event.key === '/' // '/'
-    //             )
-    //         )
-    //         .subscribe(() => {
-    //             this.createAluno();
-    //         });
+        fromEvent(this._document, 'keydown')
+            .pipe(
+                takeUntil(this._unsubscribeAll),
+                filter<KeyboardEvent>(
+                    (event) =>
+                        (event.ctrlKey === true || event.metaKey) && // Ctrl or Cmd
+                        event.key === '/' // '/'
+                )
+            )
+            .subscribe(() => {
+                this.createAluno();
+            });
 
     }   
 

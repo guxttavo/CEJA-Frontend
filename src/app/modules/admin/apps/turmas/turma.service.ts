@@ -24,7 +24,7 @@ export class TurmaService {
     }
 
     getTurmas(): Observable<Turma[]> {
-        return this._httpClient.get<Turma[]>(`${this.apiUrl}/class`).pipe(
+        return this._httpClient.get<Turma[]>(`${this.apiUrl}/class/buscarTurmas`).pipe(
             tap((turmas) => this._turmas.next(turmas)),
             catchError((error) => {
                 console.error('Erro ao buscar turmas:', error);
@@ -47,6 +47,36 @@ export class TurmaService {
                 }
                 return of(turma);
             })
+        );
+    }
+
+    searchTurmas(query: string): Observable<Turma[]> {
+        return this._httpClient.get<Turma[]>('api/apps/class/search', { params: { query } }).pipe(
+            tap((turmas) => {
+                this._turmas.next(turmas);
+            }),
+            catchError((error) => {
+                console.error('Erro ao buscar turmas com query:', error);
+                return throwError(() => new Error('Erro ao buscar turmas com query'));
+            })
+        );
+    }
+
+    createTurma(): Observable<Turma> {
+        return this.turmas$.pipe(
+            take(1),
+            switchMap((turmas) =>
+                this._httpClient.post<Turma>('api/apps/class/class', {}).pipe(
+                    map((newTurma) => {
+                        this._turmas.next([newTurma, ...turmas]);
+                        return newTurma;
+                    }),
+                    catchError((error) => {
+                        console.error('Erro ao criar turma:', error);
+                        return throwError(() => new Error('Erro ao criar turma'));
+                    })
+                )
+            )
         );
     }
 }
