@@ -1,9 +1,15 @@
 export interface Turma {
-    id: string;
+    id?: number;
     year: number;
-    shift: number;
+    shift: Shift; 
     suffix: string;
-  }
+}
+
+export enum Shift {
+    Manha = 1,
+    Tarde = 2,
+    Noite = 3
+}
   
 export interface Country {
     id: string;

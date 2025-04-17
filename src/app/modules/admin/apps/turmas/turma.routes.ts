@@ -18,7 +18,7 @@ const turmaResolver = (
     const turmasService = inject(TurmaService);
     const router = inject(Router);
 
-    return turmasService.getTurmaById(route.paramMap.get('id')).pipe(
+    return turmasService.getTurmaById(Number(route.paramMap.get('id'))).pipe(
         catchError((error) => {
             console.error(error);
 

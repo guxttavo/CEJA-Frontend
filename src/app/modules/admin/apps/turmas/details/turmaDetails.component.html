@@ -1,0 +1,24 @@
+<div *ngIf="turma">
+    <div class="-m-6 flex flex-auto flex-col md:w-160 md:min-w-160">
+        <div class="m-4">
+            <div>
+                <input class="w-full p-2 text-2xl" [placeholder]="'Ano'" type="number" [(ngModel)]="turma.year">
+            </div>
+            <div>
+                <input class="w-full p-2 text-2xl" [placeholder]="'Período (1-Manhã, 2-Tarde, 3-Noite)'" type="number" [(ngModel)]="turma.shift">
+            </div>
+            <div>
+                <input class="w-full p-2 text-2xl" [placeholder]="'Sufixo'" type="text" [(ngModel)]="turma.suffix">
+            </div>
+        </div>
+
+        <div class="mt-4 flex items-center justify-end">
+            <button mat-flat-button color="primary" (click)="createTurma()">
+                Save
+            </button>
+        </div>
+        <div class="mt-6 text-xl font-semibold px-4">
+            {{ turma.year }}º Ano {{ getShiftName(turma.shift) }} {{ turma.suffix }}
+        </div>
+    </div>
+</div>

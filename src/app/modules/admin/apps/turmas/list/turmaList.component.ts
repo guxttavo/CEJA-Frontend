@@ -14,6 +14,7 @@ import {
     UntypedFormControl,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -38,6 +39,7 @@ import {
     switchMap,
     takeUntil,
 } from 'rxjs';
+import { TurmaDetailsComponent } from '../details/turmaDetails.component';
 
 @Component({
     selector: 'turma-list-component',
@@ -79,6 +81,7 @@ export class TurmaListComponent implements OnInit {
         private _router: Router,
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
+        private _matDialog: MatDialog,
         @Inject(DOCUMENT) private _document: any
     ) { }
 
@@ -120,47 +123,20 @@ export class TurmaListComponent implements OnInit {
             )
             .subscribe();
 
-                  this._turmaService.turma$
+        this._turmaService.turma$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((turma: Turma) => {
                 this.selectedTurma = turma;
                 this._changeDetectorRef.markForCheck();
             });
-
-        // this._turmaService.countries$
-        //     .pipe(takeUntil(this._unsubscribeAll))
-        //     .subscribe((countries: Country[]) => {
-        //         this.countries = countries;
-        //         this._changeDetectorRef.markForCheck();
-        //     });
-
-        // this.searchInputControl.valueChanges
-        //     .pipe(
-        //         takeUntil(this._unsubscribeAll),
-        //         switchMap((query) =>
-        //             this._alunosService.searchAlunos(query)
-        //         )
-        //     )
-        //     .subscribe();
-
-        // this.matDrawer.openedChange.subscribe((opened) => {
-        //     if (!opened) {
-               
-        //         this.selectedAluno = null;
-        //         this._changeDetectorRef.markForCheck();
-        //     }
-        // }
-
     }
 
-    createTurma(): void {
-        this._turmaService.createTurma().subscribe((newTurma) => {
-            this._router.navigate(['./', newTurma.id], {
-                relativeTo: this._activatedRoute,
-            });
-
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
+    addNewTurma(): void {
+        this._matDialog.open(TurmaDetailsComponent, {
+            autoFocus: false,
+            data: {
+                note: {},
+            },
         });
     }
 
