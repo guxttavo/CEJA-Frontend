@@ -43,27 +43,14 @@
                     </div>
                 </div>
 
-                <!-- Turmas list -->
+                <!-- Lista de Turmas -->
                 <div class="relative">
                     @if (turmas$ | async; as turmas) {
                         @if (turmas.length) {
                             @for (
                                 turma of turmas;
-                                track trackByFn(i, turma);
-                                let i = $index
+                                track trackByFn(i, turma)
                             ) {
-                                <!-- Agrupamento por year + suffix -->
-                                @if (
-                                    i === 0 || 
-                                    turma.year !== turmas[i - 1].year || 
-                                    turma.suffix !== turmas[i - 1].suffix
-                                ) {
-                                    <div class="text-secondary sticky top-0 z-10 -mt-px border-b border-t bg-gray-50 px-6 py-1 font-medium uppercase dark:bg-gray-900 md:px-8">
-                                        {{ turma.year }}º Ano {{ turma.suffix }}
-                                    </div>
-                                }
-
-                                <!-- Turma -->
                                 <a
                                     class="z-20 flex cursor-pointer items-center border-b px-6 py-4 md:px-8"
                                     [ngClass]="{
@@ -82,7 +69,11 @@
                                             {{ turma.year }}º Ano {{ turma.suffix }}
                                         </div>
                                         <div class="text-secondary truncate leading-5">
-                                            Turno: {{ turma.shift }}
+                                            Turno: {{
+                                                turma.shift === 1 ? 'Manhã' :
+                                                turma.shift === 2 ? 'Tarde' :
+                                                turma.shift === 3 ? 'Noite' : 'Outro'
+                                            }}
                                         </div>
                                     </div>
                                 </a>

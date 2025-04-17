@@ -90,6 +90,12 @@ export class TurmaListComponent implements OnInit {
         this.turmas$ = this._turmaService.turmas$;
         this._turmaService.getTurmas().subscribe();
 
+        this.turmas$.pipe(takeUntil(this._unsubscribeAll)).subscribe((turmas) => {
+            this.turmasCount = turmas?.length || 0;
+            this._changeDetectorRef.markForCheck();
+        });
+
+
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({ matchingAliases }) => {
