@@ -8,7 +8,7 @@ import {
 import { TurmasComponent } from 'app/modules/admin/apps/turmas/turmas.component';
 import { TurmaService } from 'app/modules/admin/apps/turmas/turma.service';
 // import { TurmasDetailsComponent } from 'app/modules/admin/apps/alunos/details/details.component';
-import { TurmaListComponent } from 'app/modules/admin/apps/turmas/list/turmaList.component';
+import { TurmaListComponent } from 'app/modules/admin/apps/turmas/listar/turmaList.component';
 import { catchError, throwError } from 'rxjs';
 
 const turmaResolver = (

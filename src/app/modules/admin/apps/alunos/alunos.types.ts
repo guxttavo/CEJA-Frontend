@@ -20,6 +20,10 @@ export interface Aluno {
     tags?: string[];
 }
 
+export interface Category {
+    all: string;
+    turma: string;
+}
 export interface Country {
     id: string;
     iso: string;

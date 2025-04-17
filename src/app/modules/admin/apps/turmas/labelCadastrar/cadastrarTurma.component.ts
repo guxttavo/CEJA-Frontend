@@ -16,7 +16,7 @@ import { NgIf, NgClass } from '@angular/common';
 
 @Component({
     selector: 'turma-details',
-    templateUrl: './turmaDetails.component.html',
+    templateUrl: './cadastrarTurma.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
@@ -30,11 +30,11 @@ import { NgIf, NgClass } from '@angular/common';
         NgClass
     ],
 })
-export class TurmaDetailsComponent implements OnInit {
+export class CadastrarTurmaComponent implements OnInit {
     turma: Turma; 
 
     constructor(
-        private _matDialogRef: MatDialogRef<TurmaDetailsComponent>,
+        private _matDialogRef: MatDialogRef<CadastrarTurmaComponent>,
         @Inject(MAT_DIALOG_DATA) private _data: any,
         private _turmaService: TurmaService
     ) {}

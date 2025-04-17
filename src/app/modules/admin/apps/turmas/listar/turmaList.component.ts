@@ -40,7 +40,7 @@ import {
     takeUntil,
 } from 'rxjs';
 
-import { TurmaDetailsComponent } from '../details/turmaDetails.component';
+import { CadastrarTurmaComponent } from '../labelCadastrar/cadastrarTurma.component';
 
 @Component({
     selector: 'turma-list-component',
@@ -139,7 +139,7 @@ export class TurmaListComponent implements OnInit {
     }
 
     addNewTurma(): void {
-        this._matDialog.open(TurmaDetailsComponent, {
+        this._matDialog.open(CadastrarTurmaComponent, {
             autoFocus: false,
             data: {
                 note: {},
