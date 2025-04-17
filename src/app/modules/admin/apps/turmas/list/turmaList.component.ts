@@ -1,4 +1,4 @@
-import { AsyncPipe, DOCUMENT, I18nPluralPipe, NgClass } from '@angular/common';
+import { AsyncPipe, DOCUMENT, I18nPluralPipe, NgClass, NgIf } from '@angular/common';
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -39,6 +39,7 @@ import {
     switchMap,
     takeUntil,
 } from 'rxjs';
+
 import { TurmaDetailsComponent } from '../details/turmaDetails.component';
 
 @Component({
@@ -60,13 +61,13 @@ import { TurmaDetailsComponent } from '../details/turmaDetails.component';
         RouterLink,
         AsyncPipe,
         I18nPluralPipe,
+        NgIf
     ],
 })
 export class TurmaListComponent implements OnInit {
     @ViewChild('matDrawer', { static: true }) matDrawer: MatDrawer;
 
     turmas$: Observable<Turma[]>;
-
     turmasCount: number = 0;
     drawerMode: 'side' | 'over';
     countries: Country[];
