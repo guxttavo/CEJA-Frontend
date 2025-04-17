@@ -43,8 +43,9 @@ export class TurmaDetailsComponent implements OnInit {
         this.turma = {
             year: null,
             shift: null,
-            suffix: ''
-        };
+            suffix: '',
+            educationLevel: null
+        };        
     }
 
     createTurma(): void {
@@ -66,5 +67,13 @@ export class TurmaDetailsComponent implements OnInit {
                 return '';
         }
     }
-    
+
+    getEducationLevelName(level: number): string {
+        switch (level) {
+            case 1: return 'Fundamental';
+            case 2: return 'Médio';
+            case 3: return 'Infantil';
+            default: return '';
+        }
+    }       
 }

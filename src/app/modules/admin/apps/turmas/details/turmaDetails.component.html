@@ -11,6 +11,14 @@
                 <input class="w-full p-2 text-2xl" [placeholder]="'Sufixo'" type="text" [(ngModel)]="turma.suffix" (ngModelChange)="turma.suffix = $event.toUpperCase()" maxlength="1"
                 >
             </div>
+            <div>
+                <input
+                    class="w-full p-2 text-2xl"
+                    [placeholder]="'Nível de Ensino (1-Fundamental, 2-Médio, 3-Infantil)'"
+                    type="number"
+                    maxlength="1"
+                    [(ngModel)]="turma.educationLevel">
+            </div>                   
         </div>
 
         <div class="mt-4 flex items-center justify-end">
@@ -19,7 +27,8 @@
             </button>
         </div>
         <div *ngIf="turma.year" class="mt-6 text-xl font-semibold px-4">
-            {{ turma.year }}º Ano {{ getShiftName(turma.shift) }} {{ turma.suffix }}
+            {{ turma.year }}º Ano {{ getShiftName(turma.shift) }} {{ turma.suffix }} - {{ getEducationLevelName(turma.educationLevel) }}
         </div>
+        
     </div>
 </div>

@@ -1,8 +1,15 @@
 export interface Turma {
     id?: number;
     year: number;
-    shift: Shift; 
+    shift: Shift;
     suffix: string;
+    educationLevel: EducationLevel;
+}
+
+export enum EducationLevel {
+    Fundamental = 1,
+    Medio = 2,
+    Infantil = 3
 }
 
 export enum Shift {
