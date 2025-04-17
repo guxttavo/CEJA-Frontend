@@ -60,22 +60,22 @@
                     <mat-form-field class="w-full sm:w-36" subscriptSizing="dynamic">
                         <mat-select [(value)]="selectedFilter" (selectionChange)="onFilterChange($event.value)">
                             <mat-option value="all">Todos</mat-option>
-                            <mat-option value="turma">Turma</mat-option>
+                            <mat-option value="turma">Turmas</mat-option>
                         </mat-select>
                     </mat-form-field>
 
-                    <!-- Dropdown secundário (turmas) -->
+                    <!-- Dropdown secundário: visível apenas se "turma" for selecionado -->
                     <mat-form-field *ngIf="selectedFilter === 'turma'" class="w-full sm:w-72" subscriptSizing="dynamic">
-                        <mat-select placeholder="Selecione uma turma" [(value)]="selectedTurmaId"
-                            (selectionChange)="onTurmaChange($event.value)">
-                            <mat-option *ngFor="let turma of turmas" [value]="turma.id">
-                                {{ turma.year }}º {{ turma.suffix }} - {{ turma.shift }}
-                            </mat-option>
+                        <mat-select placeholder="Filtrar por..." [(value)]="selectedTurmaFilter"
+                            (selectionChange)="onTurmaFilterChange()">
+                            <mat-option value="year">Ano</mat-option>
+                            <mat-option value="shift">Período</mat-option>
+                            <mat-option value="suffix">Sufixo</mat-option>
+                            <mat-option value="educationLevel">Fase de Escolaridade</mat-option>
                         </mat-select>
                     </mat-form-field>
 
                 </div>
-
 
                 <!-- Alunos list -->
                 <div class="relative">
