@@ -76,8 +76,6 @@ const canDeactivateAlunosDetails = (
         return true;
     }
 
-    // Otherwise, close the drawer first, and then navigate
-    return component.closeDrawer().then(() => true);
 };
 
 export default [
@@ -100,9 +98,6 @@ export default [
                         path: ':id',
                         component: AlunosDetailsComponent,
                         resolve: {
-                            aluno: alunoResolver,
-                            countries: () =>
-                                inject(AlunosService).getCountries(),
                         },
                         canDeactivate: [canDeactivateAlunosDetails],
                     },

@@ -60,7 +60,7 @@
                     <mat-form-field class="w-full sm:w-36" subscriptSizing="dynamic">
                         <mat-select [(value)]="selectedFilter" (selectionChange)="onFilterChange($event.value)">
                             <mat-option value="all">Todos</mat-option>
-                            <mat-option value="turma">Turmas</mat-option>
+                            <mat-option value="turma">Turma</mat-option>
                         </mat-select>
                     </mat-form-field>
 
@@ -75,45 +75,42 @@
                         </mat-select>
                     </mat-form-field>
 
+                    <!-- Dropdown de valores (dinâmico) -->
+                    <mat-form-field *ngIf="selectedTurmaFilter === 'year'" class="w-full sm:w-72"
+                        subscriptSizing="dynamic">
+                        <mat-select placeholder="Selecione o ano" [(value)]="selectedTurmaYear"
+                            (selectionChange)="onTurmaYearSelected($event.value)">
+                            <mat-option *ngFor="let ano of anosDisponiveis" [value]="ano">
+                                {{ ano }}º Ano
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
                 </div>
 
                 <!-- Alunos list -->
+                <!-- Lista de Alunos -->
                 <div class="relative">
                     @if (alunos$ | async; as alunos) {
-
                     @if (alunos.length) {
                     @for (
                     aluno of alunos;
                     track trackByFn(i, aluno);
                     let i = $index
                     ) {
-                    <!-- Group -->
-                    @if (
-                    i === 0 || aluno.name.charAt(0) !== alunos[i - 1].name.charAt(0)
-                    ) {
-                    <div
-                        class="text-secondary sticky top-0 z-10 -mt-px border-b border-t bg-gray-50 px-6 py-1 font-medium uppercase dark:bg-gray-900 md:px-8">
-                        {{ aluno.name.charAt(0) }}
-                    </div>
-                    }
-                    <!-- Aluno -->
                     <a class="z-20 flex cursor-pointer items-center border-b px-6 py-4 md:px-8" [ngClass]="{
-                                        'dark:hover:bg-hover hover:bg-gray-100':
-                                            !selectedAluno ||
-                                            selectedAluno.id !== aluno.id,
-                                        'bg-primary-50 dark:bg-hover':
-                                            selectedAluno &&
-                                            selectedAluno.id === aluno.id,
-                                    }" [routerLink]="['./', aluno.id]">
-                        <div class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full">
+                        'dark:hover:bg-hover hover:bg-gray-100':
+                            !selectedAluno || selectedAluno.id !== aluno.id,
+                        'bg-primary-50 dark:bg-hover':
+                            selectedAluno && selectedAluno.id === aluno.id,
+                    }" [routerLink]="['./', aluno.id]">
+                        <div
+                            class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-lg uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-200">
                             @if (aluno.avatar) {
-                            <img class="h-full w-full object-cover" [src]="aluno.avatar" alt="Aluno avatar" />
+                            <img class="h-full w-full object-cover" [src]="aluno.avatar" alt="Avatar do aluno" />
                             }
                             @if (!aluno.avatar) {
-                            <div
-                                class="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-lg uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                {{ aluno.name.charAt(0) }}
-                            </div>
+                            {{ aluno.name.charAt(0) }}
                             }
                         </div>
                         <div class="ml-4 min-w-0">
@@ -121,20 +118,19 @@
                                 {{ aluno.name }}
                             </div>
                             <div class="text-secondary truncate leading-5">
-                                {{ aluno.title }}
+                               Matrícula: {{ aluno.registrationNumber || 'Sem e-mail' }}
                             </div>
                         </div>
                     </a>
                     }
                     } @else {
                     <div class="border-t p-8 text-center text-4xl font-semibold tracking-tight sm:p-16">
-                        There are no alunos!
+                        Não há alunos cadastrados!
                     </div>
                     }
                     }
-
-                    <!-- No alunos -->
                 </div>
+
             </div>
         </mat-drawer-content>
     </mat-drawer-container>
