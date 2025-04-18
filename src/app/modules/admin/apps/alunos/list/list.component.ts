@@ -147,11 +147,11 @@ export class AlunosListComponent implements OnInit, OnDestroy {
         if (value === 'all') {
             this._alunosService.getAllStudents().subscribe();
             this.selectedTurmaId = null;
-        } else if (value === 'turma') {
-            this._alunosService.getAllStudentsWithClass().subscribe((alunos) => {
-                this.alunos = alunos;
-                this._changeDetectorRef.markForCheck();
-            });
+        }
+
+        if (value === 'turma') {
+            this._alunosService.getAllStudentsWithClass().subscribe();
+            this.selectedTurmaId = null;
         }
     }
 

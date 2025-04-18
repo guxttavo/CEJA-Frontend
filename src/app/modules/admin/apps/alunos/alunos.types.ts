@@ -1,13 +1,17 @@
-import { DateTime } from "luxon";
-
 export interface Aluno {
     id: number;
-    avatar?: string | null;
-    background?: string | null;
-    registrationNumber: number;
     name: string;
     email: string;
-    phone?: string;
-    address?: string;
-    bornDate?: DateTime;
+    phone: string;
+    address: string;
+    classId?: number;
+    registrationNumber: number;
+
+    class?: {
+        id: number;
+        year: number;
+        shift: number; 
+        suffix: string;
+        educationLevel: string;
+    };
 }

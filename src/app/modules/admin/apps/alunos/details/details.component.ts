@@ -134,7 +134,6 @@ export class AlunosDetailsComponent implements OnInit {
                 this._changeDetectorRef.markForCheck();
             });
     }
-    
 
     closeDrawer(): Promise<MatDrawerToggleResult> {
         return this._alunosListComponent.matDrawer.close();

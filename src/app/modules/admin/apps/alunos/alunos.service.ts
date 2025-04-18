@@ -33,7 +33,7 @@ export class AlunosService {
 
     getAllStudentsWithClass(): Observable<Aluno[]> {
         return this._httpClient.get<Aluno[]>(`${this.apiUrl}/Student/GetAllStudentsWithClass`).pipe(
-            tap((alunos) => this._alunos.next(alunos)),
+            tap((alunos) => this._alunos.next(alunos)), 
             catchError((error) => {
                 console.error('Erro ao buscar alunos com turma:', error);
                 return throwError(() => error);

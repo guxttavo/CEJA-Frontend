@@ -103,6 +103,7 @@ export default [
                             alunos: alunoResolver
                         },
                         canDeactivate: [canDeactivateAlunosDetails],
+                        runGuardsAndResolvers: 'paramsChange' 
                     },
                 ],
             },
