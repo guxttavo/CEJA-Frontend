@@ -53,7 +53,7 @@ export class AlunosService {
         );
     }
 
-    getAlunoById(id: string): Observable<Aluno> {
+    getAlunoById(id: number): Observable<Aluno> {
         return this._alunos.pipe(
             take(1),
             map((alunos) => {
@@ -87,44 +87,4 @@ export class AlunosService {
             )
         );
     }
-
-    updateAluno(id: string, aluno: Aluno): Observable<Aluno> {
-        return this.alunos$.pipe(
-            take(1),
-            switchMap((alunos) =>
-                this._httpClient.patch<Aluno>('api/apps/alunos/aluno', { id, aluno }).pipe(
-                    map((updatedAluno) => {
-                        const index = alunos.findIndex((item) => item.id === id);
-                        alunos[index] = updatedAluno;
-                        this._alunos.next(alunos);
-                        return updatedAluno;
-                    }),
-                    catchError((error) => {
-                        console.error('Erro ao atualizar aluno:', error);
-                        return throwError(() => new Error('Erro ao atualizar aluno'));
-                    })
-                )
-            )
-        );
-    }
-
-    deleteAluno(id: string): Observable<boolean> {
-        return this.alunos$.pipe(
-            take(1),
-            switchMap((alunos) =>
-                this._httpClient.delete('api/apps/alunos/aluno', { params: { id } }).pipe(
-                    map((isDeleted: boolean) => {
-                        const index = alunos.findIndex((item) => item.id === id);
-                        alunos.splice(index, 1);
-                        this._alunos.next(alunos);
-                        return isDeleted;
-                    }),
-                    catchError((error) => {
-                        console.error('Erro ao deletar aluno:', error);
-                        return throwError(() => new Error('Erro ao deletar aluno'));
-                    })
-                )
-            )
-        );
-    } 
 }

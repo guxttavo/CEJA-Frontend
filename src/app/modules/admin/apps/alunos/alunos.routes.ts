@@ -24,19 +24,19 @@ const alunoResolver = (
     const alunosService = inject(AlunosService);
     const router = inject(Router);
 
-    return alunosService.getAlunoById(route.paramMap.get('id')).pipe(
-        // Error here means the requested aluno is not available
+    const idParam = route.paramMap.get('id');
+    const id = idParam ? +idParam : null;
+
+    if (id === null) {
+        router.navigateByUrl(state.url.split('/').slice(0, -1).join('/'));
+        return throwError(() => new Error('ID inválido'));
+    }
+
+    return alunosService.getAlunoById(id).pipe(
         catchError((error) => {
-            // Log the error
             console.error(error);
-
-            // Get the parent url
             const parentUrl = state.url.split('/').slice(0, -1).join('/');
-
-            // Navigate to there
             router.navigateByUrl(parentUrl);
-
-            // Throw an error
             return throwError(error);
         })
     );

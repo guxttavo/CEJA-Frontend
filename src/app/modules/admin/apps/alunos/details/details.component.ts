@@ -1,7 +1,7 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { DatePipe, NgClass } from '@angular/common';
+import { DatePipe, NgClass, NgIf } from '@angular/common';
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -67,6 +67,7 @@ import { Subject, debounceTime, takeUntil } from 'rxjs';
         TextFieldModule,
         FuseFindByKeyPipe,
         DatePipe,
+        NgIf
     ],
 })
 export class AlunosDetailsComponent implements OnInit {
@@ -102,19 +103,15 @@ export class AlunosDetailsComponent implements OnInit {
         // Open the drawer
         this._alunosListComponent.matDrawer.open();
 
-        // Create the aluno form
         this.alunoForm = this._formBuilder.group({
             id: [''],
             avatar: [null],
+            registrationNumber: [null],
             name: ['', [Validators.required]],
-            email: this._formBuilder.array([]),
-            phoneNumbers: this._formBuilder.array([]),
-            title: [''],
-            company: [''],
-            birthday: [null],
-            address: [null],
-            notes: [null],
-            tags: [[]],
+            email: [''],
+            phone: [''],
+            address: [''],
+            bornDate: [null],
         });
 
         this._alunosService.alunos$
@@ -134,19 +131,8 @@ export class AlunosDetailsComponent implements OnInit {
                 // Get the aluno
                 this.aluno = aluno;
 
-                // Clear the email and phoneNumbers form arrays
-                (this.alunoForm.get('email') as UntypedFormArray).clear();
-                (
-                    this.alunoForm.get('phoneNumbers') as UntypedFormArray
-                ).clear();
-
                 // Patch values to the form
                 this.alunoForm.patchValue(aluno);
-
-
-
-
-
             });
     }
 

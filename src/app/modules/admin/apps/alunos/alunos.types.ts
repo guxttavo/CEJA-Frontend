@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 
 export interface Aluno {
-    id: string;
+    id: number;
     avatar?: string | null;
     background?: string | null;
     registrationNumber: number;
