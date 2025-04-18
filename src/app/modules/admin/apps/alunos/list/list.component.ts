@@ -75,11 +75,21 @@ export class AlunosListComponent implements OnInit, OnDestroy {
     alunos$: Observable<Aluno[]>;
     turmas: Turma[];
     alunos: Aluno[];
+
     // variaveis referentes ao dropdown de turma e seus respectivos sub-dropdowns
     selectedFilter: 'all' | 'turma' = 'all';
     selectedTurmaFilter: 'year' | 'shift' | 'suffix' | 'educationLevel' | null = null;
-    selectedTurmaId: number | null = null;
+    // selectedTurmaId: number | null = null;
+    selectedTurmaShift: number | null = null;
     anosDisponiveis: number[] = [];
+    periodosDisponiveis = [
+        { label: 'Manhã', value: 1 },
+        { label: 'Tarde', value: 2 },
+        { label: 'Noite', value: 3 }
+    ];
+    
+    sufixosDisponiveis: string[] = [];
+    selectedTurmaSuffix: string | null = null;
 
     alunosCount: number = 0;
     drawerMode: 'side' | 'over';
@@ -146,7 +156,7 @@ export class AlunosListComponent implements OnInit, OnDestroy {
     onFilterChange(value: 'all' | 'turma'): void {
         if (value === 'all') {
             this._alunosService.getAllStudents().subscribe();
-            this.selectedTurmaId = null;
+            // this.selectedTurmaId = null;
         }
 
         if (value === 'turma') {
@@ -154,7 +164,7 @@ export class AlunosListComponent implements OnInit, OnDestroy {
                 this.alunos = alunosComTurma;
                 this.getYearFromStudent(alunosComTurma);
             });
-            this.selectedTurmaId = null;
+            // this.selectedTurmaId = null;
         }
     }
 
@@ -162,19 +172,47 @@ export class AlunosListComponent implements OnInit, OnDestroy {
         if (this.selectedTurmaFilter === 'year' && this.turmas?.length) {
             this.getYearFromStudent(this.alunos);
         }
+
+        if (this.selectedTurmaFilter === 'suffix') {
+            this.getSuffixFromStudent(this.alunos);
+            this.selectedTurmaSuffix = null;
+        }
     }
-    
+
     getYearFromStudent(alunos: Aluno[]): void {
         const anos = alunos.map(a => a.class.year);
         this.anosDisponiveis = [...new Set(anos)].sort((a, b) => a - b)
         console.log(anos);
     }
 
+    getSuffixFromStudent(alunos: Aluno[]): void {
+        const sufixos = alunos.map(a => a.class.suffix);
+        this.sufixosDisponiveis = [...new Set(sufixos)].sort(); // ordem alfabética
+    }    
+
     onTurmaYearSelected(year: number): void {
         const alunosFiltrados = this.alunos.filter(a => a.class.year === year);
         this._alunosService.setAlunos(alunosFiltrados);
         this._changeDetectorRef.markForCheck();
     }
+
+    onTurmaShiftSelected(shiftSelecionado: number): void {
+        if (!shiftSelecionado) return;
+
+        const alunosFiltrados = this.alunos.filter(a => a.class?.shift === shiftSelecionado);
+        this._alunosService.setAlunos(alunosFiltrados);
+        this._changeDetectorRef.markForCheck();
+    }
+
+    onTurmaSuffixSelected(suffixSelecionado: string): void {
+        if (!suffixSelecionado) return;
+    
+        const alunosFiltrados = this.alunos.filter(a => a.class?.suffix === suffixSelecionado);
+        this._alunosService.setAlunos(alunosFiltrados);
+        this._changeDetectorRef.markForCheck();
+    }
+ 
+    
 
     ngOnDestroy(): void {
         this._unsubscribeAll.next(null);

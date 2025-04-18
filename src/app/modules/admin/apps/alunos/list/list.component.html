@@ -71,7 +71,7 @@
                             <mat-option value="year">Ano</mat-option>
                             <mat-option value="shift">Período</mat-option>
                             <mat-option value="suffix">Sufixo</mat-option>
-                            <mat-option value="educationLevel">Fase de Escolaridade</mat-option>
+                            <!-- <mat-option value="educationLevel">Fase de Escolaridade</mat-option> -->
                         </mat-select>
                     </mat-form-field>
 
@@ -82,6 +82,28 @@
                             (selectionChange)="onTurmaYearSelected($event.value)">
                             <mat-option *ngFor="let ano of anosDisponiveis" [value]="ano">
                                 {{ ano }}º Ano
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!-- Dropdown de períodos (dinâmico) -->
+                    <mat-form-field *ngIf="selectedTurmaFilter === 'shift' && selectedFilter === 'turma'"
+                        class="w-full sm:w-72" subscriptSizing="dynamic">
+                        <mat-select placeholder="Selecione o período" [(value)]="selectedTurmaShift"
+                            (selectionChange)="onTurmaShiftSelected($event.value)">
+                            <mat-option *ngFor="let p of periodosDisponiveis" [value]="p.value">
+                                {{ p.label }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!-- Dropdown de sufixo (dinâmico) -->
+                    <mat-form-field *ngIf="selectedTurmaFilter === 'suffix' && selectedFilter === 'turma'"
+                        class="w-full sm:w-72" subscriptSizing="dynamic">
+                        <mat-select placeholder="Selecione o sufixo" [(value)]="selectedTurmaSuffix"
+                            (selectionChange)="onTurmaSuffixSelected($event.value)">
+                            <mat-option *ngFor="let s of sufixosDisponiveis" [value]="s">
+                                {{ s }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
