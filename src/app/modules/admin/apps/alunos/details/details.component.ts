@@ -100,9 +100,8 @@ export class AlunosDetailsComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        // Open the drawer
         this._alunosListComponent.matDrawer.open();
-
+    
         this.alunoForm = this._formBuilder.group({
             id: [''],
             avatar: [null],
@@ -113,27 +112,32 @@ export class AlunosDetailsComponent implements OnInit {
             address: [''],
             bornDate: [null],
         });
-
-        this._alunosService.alunos$
+    
+        // Reage a troca de ID na URL
+        this._activatedRoute.paramMap
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((alunos: Aluno[]) => {
-                this.alunos = alunos;
-
-                this._changeDetectorRef.markForCheck();
+            .subscribe(params => {
+                const id = +params.get('id');
+                if (id) {
+                    this._alunosService.getAlunoById(id).subscribe();
+                }
             });
-
+    
+        // Atualiza a UI quando o aluno mudar
         this._alunosService.aluno$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((aluno: Aluno) => {
-                // Open the drawer in case it is closed
-                this._alunosListComponent.matDrawer.open();
-
-                // Get the aluno
+                if (!aluno) return;
+    
                 this.aluno = aluno;
-
-                // Patch values to the form
                 this.alunoForm.patchValue(aluno);
+                this._changeDetectorRef.markForCheck();
             });
+    }
+    
+
+    closeDrawer(): Promise<MatDrawerToggleResult> {
+        return this._alunosListComponent.matDrawer.close();
     }
 
     trackByFn(index: number, item: any): any {

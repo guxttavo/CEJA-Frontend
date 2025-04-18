@@ -25,7 +25,7 @@ const alunoResolver = (
     const router = inject(Router);
 
     const idParam = route.paramMap.get('id');
-    const id = idParam ? +idParam : null;
+    const id = idParam ? + idParam : null;
 
     if (id === null) {
         router.navigateByUrl(state.url.split('/').slice(0, -1).join('/'));
@@ -36,7 +36,9 @@ const alunoResolver = (
         catchError((error) => {
             console.error(error);
             const parentUrl = state.url.split('/').slice(0, -1).join('/');
+
             router.navigateByUrl(parentUrl);
+
             return throwError(error);
         })
     );
@@ -76,6 +78,7 @@ const canDeactivateAlunosDetails = (
         return true;
     }
 
+    return component.closeDrawer().then(() => true);
 };
 
 export default [
