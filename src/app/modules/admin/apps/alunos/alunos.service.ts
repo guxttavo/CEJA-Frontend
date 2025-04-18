@@ -57,7 +57,7 @@ export class AlunosService {
         return this._alunos.pipe(
             take(1),
             map((alunos) => {
-                const aluno = alunos.find((item) => item.id === id) || null;
+                const aluno = alunos.find((item) => item.id == id) || null;
                 this._aluno.next(aluno);
                 return aluno;
             }),

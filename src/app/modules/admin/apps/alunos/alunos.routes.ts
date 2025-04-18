@@ -90,14 +90,14 @@ export default [
                 path: '',
                 component: AlunosListComponent,
                 resolve: {
-                    // alunos: () => inject(AlunosService).getAlunos(),
-                    // countries: () => inject(AlunosService).getCountries(),
+                    alunos: () => inject(AlunosService).getAllStudents()
                 },
                 children: [
                     {
                         path: ':id',
                         component: AlunosDetailsComponent,
                         resolve: {
+                            alunos: alunoResolver
                         },
                         canDeactivate: [canDeactivateAlunosDetails],
                     },

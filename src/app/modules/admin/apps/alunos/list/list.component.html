@@ -98,19 +98,16 @@
                     track trackByFn(i, aluno);
                     let i = $index
                     ) {
-                    <a class="z-20 flex cursor-pointer items-center border-b px-6 py-4 md:px-8" [ngClass]="{
-                        'dark:hover:bg-hover hover:bg-gray-100':
-                            !selectedAluno || selectedAluno.id !== aluno.id,
-                        'bg-primary-50 dark:bg-hover':
-                            selectedAluno && selectedAluno.id === aluno.id,
-                    }" [routerLink]="['./', aluno.id]">
+                    <a class="z-20 flex cursor-pointer items-center border-b px-6 py-4 md:px-8"
+                        [ngClass]="{'dark:hover:bg-hover hover:bg-gray-100':!selectedAluno || selectedAluno.id !== aluno.id,'bg-primary-50 dark:bg-hover':selectedAluno && selectedAluno.id === aluno.id,}"
+                        [routerLink]="['./', aluno.id]">
                         <div
                             class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-lg uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-200">
                             @if (aluno.avatar) {
                             <img class="h-full w-full object-cover" [src]="aluno.avatar" alt="Avatar do aluno" />
                             }
                             @if (!aluno.avatar) {
-                            {{ aluno.name.charAt(0) }}
+                            {{ aluno.name }}
                             }
                         </div>
                         <div class="ml-4 min-w-0">
@@ -118,7 +115,7 @@
                                 {{ aluno.name }}
                             </div>
                             <div class="text-secondary truncate leading-5">
-                               Matrícula: {{ aluno.registrationNumber || 'Sem e-mail' }}
+                                Matrícula: {{ aluno.registrationNumber || 'Sem e-mail' }}
                             </div>
                         </div>
                     </a>
