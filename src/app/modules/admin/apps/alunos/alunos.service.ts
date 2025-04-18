@@ -87,4 +87,9 @@ export class AlunosService {
             )
         );
     }
+
+    setAlunos(alunos: Aluno[]): void {
+        this._alunos.next(alunos);
+    }
+    
 }

@@ -150,15 +150,30 @@ export class AlunosListComponent implements OnInit, OnDestroy {
         }
 
         if (value === 'turma') {
-            this._alunosService.getAllStudentsWithClass().subscribe();
+            this._alunosService.getAllStudentsWithClass().subscribe((alunosComTurma) => {
+                this.alunos = alunosComTurma;
+                this.getYearFromStudent(alunosComTurma);
+            });
             this.selectedTurmaId = null;
         }
     }
 
     onTurmaFilterChange(): void {
         if (this.selectedTurmaFilter === 'year' && this.turmas?.length) {
-            this.anosDisponiveis = [...new Set(this.turmas.map(t => t.year))].sort((a, b) => a - b);
+            this.getYearFromStudent(this.alunos);
         }
+    }
+    
+    getYearFromStudent(alunos: Aluno[]): void {
+        const anos = alunos.map(a => a.class.year);
+        this.anosDisponiveis = [...new Set(anos)].sort((a, b) => a - b)
+        console.log(anos);
+    }
+
+    onTurmaYearSelected(year: number): void {
+        const alunosFiltrados = this.alunos.filter(a => a.class.year === year);
+        this._alunosService.setAlunos(alunosFiltrados);
+        this._changeDetectorRef.markForCheck();
     }
 
     ngOnDestroy(): void {

@@ -76,8 +76,8 @@
                     </mat-form-field>
 
                     <!-- Dropdown de valores (dinâmico) -->
-                    <mat-form-field *ngIf="selectedTurmaFilter === 'year'" class="w-full sm:w-72"
-                        subscriptSizing="dynamic">
+                    <mat-form-field *ngIf="selectedTurmaFilter === 'year' && selectedFilter === 'turma'"
+                        class="w-full sm:w-72" subscriptSizing="dynamic">
                         <mat-select placeholder="Selecione o ano" [(value)]="selectedTurmaYear"
                             (selectionChange)="onTurmaYearSelected($event.value)">
                             <mat-option *ngFor="let ano of anosDisponiveis" [value]="ano">
@@ -85,7 +85,6 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-
                 </div>
 
                 <!-- Alunos list -->

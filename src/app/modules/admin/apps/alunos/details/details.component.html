@@ -17,12 +17,14 @@
             <!-- Avatar and actions -->
             <div class="-mt-16 flex flex-auto items-end">
                 <!-- Avatar -->
-                <div class="ring-bg-card flex h-32 w-32 items-center justify-center overflow-hidden rounded-full ring-4">
+                <div
+                    class="ring-bg-card flex h-32 w-32 items-center justify-center overflow-hidden rounded-full ring-4">
                     @if (aluno.avatar) {
                     <img class="h-full w-full object-cover" [src]="aluno.avatar" />
                     }
                     @if (!aluno.avatar) {
-                    <div class="flex h-full w-full items-center justify-center overflow-hidden rounded bg-gray-200 text-8xl font-bold uppercase leading-none text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                    <div
+                        class="flex h-full w-full items-center justify-center overflow-hidden rounded bg-gray-200 text-8xl font-bold uppercase leading-none text-gray-600 dark:bg-gray-700 dark:text-gray-200">
                         {{ aluno.name.charAt(0) }}
                     </div>
                     }
@@ -86,7 +88,7 @@
                 <div class="mt-2 flex sm:items-center" *ngIf="aluno.class?.year">
                     <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
                     <div class="ml-6 leading-6">
-                        Ano: {{ aluno.class.year }}
+                        Ano: {{ aluno.class.year }} º {{ aluno.class.suffix }}
                     </div>
                 </div>
 
@@ -96,18 +98,10 @@
                     <div class="ml-6 leading-6">
                         Período:
                         {{
-                            aluno.class.shift === 1 ? 'Manhã' :
-                            aluno.class.shift === 2 ? 'Tarde' :
-                            aluno.class.shift === 3 ? 'Noite' : 'Desconhecido'
+                        aluno.class.shift === 1 ? 'Manhã' :
+                        aluno.class.shift === 2 ? 'Tarde' :
+                        aluno.class.shift === 3 ? 'Noite' : 'Desconhecido'
                         }}
-                    </div>
-                </div>
-
-                <!-- Sufixo -->
-                <div class="mt-2 flex sm:items-center" *ngIf="aluno.class?.suffix">
-                    <mat-icon [svgIcon]="'heroicons_outline:hashtag'"></mat-icon>
-                    <div class="ml-6 leading-6">
-                        Sufixo: {{ aluno.class.suffix }}
                     </div>
                 </div>
 
@@ -117,10 +111,9 @@
                     <div class="ml-6 leading-6">
                         Nível:
                         {{
-                            aluno.class.educationLevel === 'Fundamental' ? 'Ensino Fundamental' :
-                            aluno.class.educationLevel === 'Medio' ? 'Ensino Médio' :
-                            aluno.class.educationLevel === 'Infantil' ? 'Educação Infantil' :
-                            aluno.class.educationLevel
+                        aluno.class.educationLevel === 1 ? 'Ensino Fundamental' :
+                        aluno.class.educationLevel === 2 ? 'Ensino Médio' :
+                        aluno.class.educationLevel === 3 ? 'Educação Infantil' : aluno.class.educationLevel
                         }}
                     </div>
                 </div>
