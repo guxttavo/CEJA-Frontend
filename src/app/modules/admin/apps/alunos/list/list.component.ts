@@ -28,9 +28,8 @@ import {
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { AlunosService } from 'app/modules/admin/apps/alunos/alunos.service';
 import {
-    Aluno,
     Country,
-} from 'app/modules/admin/apps/alunos/alunos.types';
+} from 'app/modules/admin/apps/shared/alunos.types';
 import {
     Observable,
     Subject,
@@ -39,6 +38,7 @@ import {
     switchMap,
     takeUntil,
 } from 'rxjs';
+import { Aluno } from 'app/modules/admin/apps/shared/alunos.types';
 
 @Component({
     selector: 'alunos-list',

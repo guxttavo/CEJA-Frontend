@@ -1,19 +1,22 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Aluno, Country, Tag } from 'app/modules/admin/apps/alunos/alunos.types';
+import { inject, Injectable } from '@angular/core';
+import { BaseHttpService } from 'app/core/base/base-http.service';
+import { Country, Tag } from 'app/modules/admin/apps/shared/alunos.types';
 import { BehaviorSubject, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { Aluno } from '../shared/alunos.types';
 
 @Injectable({ providedIn: 'root' })
-export class AlunosService {
+export class AlunosService extends BaseHttpService{
     private _aluno: BehaviorSubject<Aluno | null> = new BehaviorSubject(null);
     private _alunos: BehaviorSubject<Aluno[] | null> = new BehaviorSubject(null);
     private _countries: BehaviorSubject<Country[] | null> = new BehaviorSubject(null);
     private _tags: BehaviorSubject<Tag[] | null> = new BehaviorSubject(null);
-
-    private apiUrl = 'https://localhost:44389/api';
-
-    constructor(private _httpClient: HttpClient) { }
+    private _httpClient = inject(HttpClient);
+    
+    constructor(http: HttpClient) {
+        super(http);
+    }
 
     get aluno$(): Observable<Aluno> {
         return this._aluno.asObservable();
@@ -32,7 +35,7 @@ export class AlunosService {
     }
 
     getAlunos(): Observable<Aluno[]> {
-        return this._httpClient.get<Aluno[]>(`${this.apiUrl}/Student`).pipe(
+        return this._httpClient.get<Aluno[]>(`${this.apiUrl}/student`).pipe(
             tap((alunos) => this._alunos.next(alunos)),
             catchError((error) => {
                 console.error('Erro ao buscar alunos:', error);
@@ -43,7 +46,7 @@ export class AlunosService {
     
 
     searchAlunos(query: string): Observable<Aluno[]> {
-        return this._httpClient.get<Aluno[]>('api/apps/alunos/search', { params: { query } }).pipe(
+        return this._httpClient.get<Aluno[]>(`${this.apiUrl}/student`, { params: { query } }).pipe(
             tap((alunos) => {
                 this._alunos.next(alunos);
             }),
@@ -58,6 +61,10 @@ export class AlunosService {
         return this._alunos.pipe(
             take(1),
             map((alunos) => {
+                if (!alunos) {
+                    throw new Error('A lista de alunos não foi carregada.');
+                }
+
                 const aluno = alunos.find((item) => item.id === id) || null;
                 this._aluno.next(aluno);
                 return aluno;
@@ -72,28 +79,61 @@ export class AlunosService {
     }
 
     createAluno(): Observable<Aluno> {
+        // Cria um aluno com dados padrão
+        const newAluno: Aluno = {
+            id: this.generateId(), // Gere um ID único localmente
+            name: 'Novo Aluno',
+            email: '',
+            phoneNumbers: [],
+            bornDate: null,
+            address: null,
+            notes: null,
+            tags: [],
+            document: '',
+            password: '',
+            phone: '',
+            registrationNumber: 0
+        };
+    
+        // Atualiza a lista local de alunos
         return this.alunos$.pipe(
             take(1),
-            switchMap((alunos) =>
-                this._httpClient.post<Aluno>('api/apps/alunos/aluno', {}).pipe(
-                    map((newAluno) => {
-                        this._alunos.next([newAluno, ...alunos]);
-                        return newAluno;
-                    }),
-                    catchError((error) => {
-                        console.error('Erro ao criar aluno:', error);
-                        return throwError(() => new Error('Erro ao criar aluno'));
-                    })
-                )
-            )
+            map((alunos) => {
+                this._alunos.next([newAluno, ...alunos]);
+                return newAluno;
+            })
         );
+    }
+    
+    saveAluno(aluno: Aluno): Observable<Aluno> {
+        // Salva o aluno na API
+        return this._httpClient.post<Aluno>(`${this.apiUrl}/student`, aluno).pipe(
+            tap((savedAluno) => {
+                // Atualiza a lista local com o aluno salvo
+                this.alunos$.pipe(take(1)).subscribe((alunos) => {
+                    const updatedAlunos = alunos.map((a) =>
+                        a.id === savedAluno.id ? savedAluno : a
+                    );
+                    this._alunos.next(updatedAlunos);
+                });
+            }),
+            catchError((error) => {
+                console.error('Erro ao salvar aluno:', error);
+                return throwError(() => new Error('Erro ao salvar aluno'));
+            })
+        );
+    }
+    
+    private generateId(): string {
+        // Gera um ID único localmente
+        return Math.random().toString(36).substr(2, 9);
     }
 
     updateAluno(id: string, aluno: Aluno): Observable<Aluno> {
         return this.alunos$.pipe(
             take(1),
             switchMap((alunos) =>
-                this._httpClient.patch<Aluno>('api/apps/alunos/aluno', { id, aluno }).pipe(
+                this._httpClient.put<Aluno>(`${this.apiUrl}/student`, { id, aluno }).pipe(
                     map((updatedAluno) => {
                         const index = alunos.findIndex((item) => item.id === id);
                         alunos[index] = updatedAluno;
@@ -113,7 +153,7 @@ export class AlunosService {
         return this.alunos$.pipe(
             take(1),
             switchMap((alunos) =>
-                this._httpClient.delete('api/apps/alunos/aluno', { params: { id } }).pipe(
+                this._httpClient.delete(`${this.apiUrl}/student`, { params: { id } }).pipe(
                     map((isDeleted: boolean) => {
                         const index = alunos.findIndex((item) => item.id === id);
                         alunos.splice(index, 1);
@@ -130,7 +170,7 @@ export class AlunosService {
     }
 
     getCountries(): Observable<Country[]> {
-        return this._httpClient.get<Country[]>('api/apps/alunos/countries').pipe(
+        return this._httpClient.get<Country[]>(`${this.apiUrl}/student`).pipe(
             tap((countries) => {
                 this._countries.next(countries);
             }),
@@ -142,7 +182,7 @@ export class AlunosService {
     }
 
     getTags(): Observable<Tag[]> {
-        return this._httpClient.get<Tag[]>('api/apps/alunos/tags').pipe(
+        return this._httpClient.get<Tag[]>(`${this.apiUrl}/student`).pipe(
             tap((tags) => {
                 this._tags.next(tags);
             }),
@@ -157,7 +197,7 @@ export class AlunosService {
         return this.tags$.pipe(
             take(1),
             switchMap((tags) =>
-                this._httpClient.post<Tag>('api/apps/alunos/tag', { tag }).pipe(
+                this._httpClient.post<Tag>(`${this.apiUrl}/student`, { tag }).pipe(
                     map((newTag) => {
                         this._tags.next([...tags, newTag]);
                         return newTag;
@@ -175,7 +215,7 @@ export class AlunosService {
         return this.tags$.pipe(
             take(1),
             switchMap((tags) =>
-                this._httpClient.patch<Tag>('api/apps/alunos/tag', { id, tag }).pipe(
+                this._httpClient.patch<Tag>(`${this.apiUrl}/student`, { id, tag }).pipe(
                     map((updatedTag) => {
                         const index = tags.findIndex((item) => item.id === id);
                         tags[index] = updatedTag;
@@ -195,7 +235,7 @@ export class AlunosService {
         return this.tags$.pipe(
             take(1),
             switchMap((tags) =>
-                this._httpClient.delete('api/apps/alunos/tag', { params: { id } }).pipe(
+                this._httpClient.delete(`${this.apiUrl}/student`, { params: { id } }).pipe(
                     map((isDeleted: boolean) => {
                         const index = tags.findIndex((item) => item.id === id);
                         tags.splice(index, 1);
@@ -215,7 +255,7 @@ export class AlunosService {
         return this.alunos$.pipe(
             take(1),
             switchMap((alunos) =>
-                this._httpClient.post<Aluno>('api/apps/alunos/avatar', { id, avatar }, {
+                this._httpClient.post<Aluno>(`${this.apiUrl}/student`, { id, avatar }, {
                     headers: {
                         'Content-Type': avatar.type,
                     },

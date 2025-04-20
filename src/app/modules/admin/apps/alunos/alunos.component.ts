@@ -5,8 +5,8 @@ import {
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Aluno } from './alunos.types';
 import { AlunosService } from './alunos.service';
+import { Aluno } from 'app/modules/admin/apps/shared/alunos.types';
 
 @Component({
     selector: 'alunos',

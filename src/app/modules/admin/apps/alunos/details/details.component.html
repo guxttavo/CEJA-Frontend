@@ -181,18 +181,9 @@
                                             [style.backgroundSize]="
                                                 '24px 3876px'
                                             "
-                                            [style.backgroundPosition]="
-                                                getCountryByIso(
-                                                    phoneNumber.country
-                                                ).flagImagePos
-                                            "
                                         ></div>
                                         <div class="font-mono sm:ml-3">
-                                            {{
-                                                getCountryByIso(
-                                                    phoneNumber.country
-                                                ).code
-                                            }}
+                                            Código
                                         </div>
                                         <div class="ml-2.5 font-mono">
                                             {{ phoneNumber.phoneNumber }}
@@ -770,23 +761,11 @@
                                                         [style.backgroundSize]="
                                                             '24px 3876px'
                                                         "
-                                                        [style.backgroundPosition]="
-                                                            getCountryByIso(
-                                                                phoneNumber.get(
-                                                                    'country'
-                                                                ).value
-                                                            ).flagImagePos
-                                                        "
+
                                                     ></span>
                                                     <span
                                                         class="text-default font-medium sm:mx-0.5"
-                                                        >{{
-                                                            getCountryByIso(
-                                                                phoneNumber.get(
-                                                                    'country'
-                                                                ).value
-                                                            ).code
-                                                        }}</span
+                                                        >Código</span
                                                     >
                                                 </span>
                                             </mat-select-trigger>
@@ -808,18 +787,13 @@
                                                             [style.backgroundSize]="
                                                                 '24px 3876px'
                                                             "
-                                                            [style.backgroundPosition]="
-                                                                country.flagImagePos
-                                                            "
                                                         ></span>
                                                         <span class="ml-2">{{
                                                             country.name
                                                         }}</span>
                                                         <span
                                                             class="ml-2 font-medium"
-                                                            >{{
-                                                                country.code
-                                                            }}</span
+                                                            >test</span
                                                         >
                                                     </span>
                                                 </mat-option>

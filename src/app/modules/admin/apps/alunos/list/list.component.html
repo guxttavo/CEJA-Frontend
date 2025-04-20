@@ -1,164 +1,118 @@
 <div class="absolute inset-0 flex min-w-0 flex-col overflow-hidden">
-    <mat-drawer-container
-        class="bg-card h-full flex-auto dark:bg-transparent"
-        (backdropClick)="onBackdropClicked()"
-    >
-        <!-- Drawer -->
-        <mat-drawer
-            class="w-full dark:bg-gray-900 md:w-160"
-            [mode]="drawerMode"
-            [opened]="false"
-            [position]="'end'"
-            [disableClose]="true"
-            #matDrawer
-        >
+    <mat-drawer-container class="bg-card h-full flex-auto dark:bg-transparent" (backdropClick)="onBackdropClicked()">
+        <!-- Gaveta -->
+        <mat-drawer class="w-full dark:bg-gray-900 md:w-160" [mode]="drawerMode" [opened]="false" [position]="'end'"
+            [disableClose]="true" #matDrawer>
             <router-outlet></router-outlet>
         </mat-drawer>
 
         <mat-drawer-content class="flex flex-col">
-            <!-- Main -->
+            <!-- Principal -->
             <div class="flex-auto">
-                <!-- Header -->
-                <div
-                    class="flex flex-auto flex-col justify-between border-b px-6 py-8 sm:flex-row md:flex-col md:px-8"
-                >
-                    <!-- Title -->
+                <!-- Cabeçalho -->
+                <div class="flex flex-auto flex-col justify-between border-b px-6 py-8 sm:flex-row md:flex-col md:px-8">
+                    <!-- Título -->
                     <div>
-                        <div
-                            class="text-4xl font-extrabold leading-none tracking-tight"
-                        >
+                        <div class="text-4xl font-extrabold leading-none tracking-tight">
                             Alunos
                         </div>
                         <div class="text-secondary ml-0.5 font-medium">
                             @if (alunosCount > 0) {
-                                {{ alunosCount }}
+                            {{ alunosCount }}
                             }
                             {{
-                                alunosCount
-                                    | i18nPlural
-                                        : {
-                                              '=0': 'Sem alunos cadastrados',
-                                              '=1': 'aluno',
-                                              other: 'alunos',
-                                          }
+                            alunosCount
+                            | i18nPlural
+                            : {
+                            '=0': 'Sem alunos cadastrados',
+                            '=1': 'aluno',
+                            other: 'alunos',
+                            }
                             }}
                         </div>
                     </div>
 
-                    <!-- Main actions -->
+                    <!-- Ações principais -->
                     <div class="mt-4 flex items-center sm:mt-0 md:mt-4">
-                        <!-- Search -->
+                        <!-- Pesquisa -->
                         <div class="flex-auto">
-                            <mat-form-field
-                                class="fuse-mat-dense fuse-mat-rounded w-full min-w-50"
-                                subscriptSizing="dynamic"
-                            >
-                                <mat-icon
-                                    class="icon-size-5"
-                                    matPrefix
-                                    [svgIcon]="
+                            <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full min-w-50"
+                                subscriptSizing="dynamic">
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="
                                         'heroicons_solid:magnifying-glass'
-                                    "
-                                ></mat-icon>
-                                <input
-                                    matInput
-                                    [formControl]="searchInputControl"
-                                    [autocomplete]="'off'"
-                                    [placeholder]="'Search alunos'"
-                                />
+                                    "></mat-icon>
+                                <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                                    [placeholder]="'Buscar por nome ou CPF'" />
                             </mat-form-field>
                         </div>
-                        <!-- Add aluno button -->
-                        <button
-                            class="ml-4"
-                            mat-flat-button
-                            [color]="'primary'"
-                            (click)="createAluno()"
-                        >
-                            <mat-icon
-                                [svgIcon]="'heroicons_outline:plus'"
-                            ></mat-icon>
-                            <span class="ml-2 mr-1">Add</span>
+                        <!-- Botão adicionar aluno -->
+                        <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createAluno()">
+                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                            <span class="ml-2 mr-1">Adicionar</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Alunos list -->
+                <!-- Lista de alunos -->
                 <div class="relative">
                     @if (alunos$ | async; as alunos) {
-                        @if (alunos.length) {
-                            @for (
-                                aluno of alunos;
-                                track trackByFn(i, aluno);
-                                let i = $index
-                            ) {
-                                <!-- Group -->
-                                @if (
-                                    i === 0 ||
-                                    aluno.name.charAt(0) !==
-                                        alunos[i - 1].name.charAt(0)
-                                ) {
-                                    <div
-                                        class="text-secondary sticky top-0 z-10 -mt-px border-b border-t bg-gray-50 px-6 py-1 font-medium uppercase dark:bg-gray-900 md:px-8"
-                                    >
-                                        {{ aluno.name.charAt(0) }}
-                                    </div>
-                                }
-                                <!-- Aluno -->
-                                <a
-                                    class="z-20 flex cursor-pointer items-center border-b px-6 py-4 md:px-8"
-                                    [ngClass]="{
+                    @if (alunos.length) {
+                    @for (
+                    aluno of alunos;
+                    track trackByFn(i, aluno);
+                    let i = $index
+                    ) {
+                    <!-- Grupo -->
+                    @if (
+                    i === 0 ||
+                    aluno.name.charAt(0) !==
+                    alunos[i - 1].name.charAt(0)
+                    ) {
+                    <div
+                        class="text-secondary sticky top-0 z-10 -mt-px border-b border-t bg-gray-50 px-6 py-1 font-medium uppercase dark:bg-gray-900 md:px-8">
+                        {{ aluno.name.charAt(0) }}
+                    </div>
+                    }
+                    <!-- Aluno -->
+                    <a class="z-20 flex cursor-pointer items-center border-b px-6 py-4 md:px-8" [ngClass]="{
                                         'dark:hover:bg-hover hover:bg-gray-100':
                                             !selectedAluno ||
                                             selectedAluno.id !== aluno.id,
                                         'bg-primary-50 dark:bg-hover':
                                             selectedAluno &&
                                             selectedAluno.id === aluno.id,
-                                    }"
-                                    [routerLink]="['./', aluno.id]"
-                                >
-                                    <div
-                                        class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full"
-                                    >
-                                        @if (aluno.avatar) {
-                                            <img
-                                                class="h-full w-full object-cover"
-                                                [src]="aluno.avatar"
-                                                alt="Aluno avatar"
-                                            />
-                                        }
-                                        @if (!aluno.avatar) {
-                                            <div
-                                                class="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-lg uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-200"
-                                            >
-                                                {{ aluno.name.charAt(0) }}
-                                            </div>
-                                        }
-                                    </div>
-                                    <div class="ml-4 min-w-0">
-                                        <div
-                                            class="truncate font-medium leading-5"
-                                        >
-                                            {{ aluno.name }}
-                                        </div>
-                                        <div
-                                            class="text-secondary truncate leading-5"
-                                        >
-                                            {{ aluno.title }}
-                                        </div>
-                                    </div>
-                                </a>
+                                    }" [routerLink]="['./', aluno.id]">
+                        <div class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full">
+                            @if (aluno.avatar) {
+                            <img class="h-full w-full object-cover" [src]="aluno.avatar" alt="Avatar do aluno" />
                             }
-                        } @else {
+                            @if (!aluno.avatar) {
                             <div
-                                class="border-t p-8 text-center text-4xl font-semibold tracking-tight sm:p-16"
-                            >
-                                There are no alunos!
+                                class="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-lg uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                {{ aluno.name.charAt(0) }}
                             </div>
-                        }
+                            }
+                        </div>
+                        <div class="ml-4 min-w-0">
+                            <div class="truncate font-medium leading-5">
+                                {{ aluno.name }}
+                            </div>
+                            <div class="text-secondary truncate leading-5">
+                                {{ aluno.title }}
+                            </div>
+                        </div>
+                    </a>
+                    }
+                    } @else {
+                    <div class="border-t p-8 text-center text-4xl font-semibold tracking-tight sm:p-16">
+                        <div class="text-secondary mb-6 text-2xl font-semibold tracking-tight">
+                            Nenhum aluno encontrado!
+                        </div>
+                    </div>
+                    }
                     }
 
-                    <!-- No alunos -->
+                    <!-- Sem alunos -->
                 </div>
             </div>
         </mat-drawer-content>

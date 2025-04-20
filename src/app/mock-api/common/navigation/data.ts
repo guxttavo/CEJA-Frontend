@@ -10,6 +10,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon: 'heroicons_outline:home',
         children: [
             {
+                id: 'admin.turmas',
+                title: 'Turmas',
+                type: 'basic',
+                icon: 'heroicons_outline:rectangle-group',
+                link: '/admin/turmas',
+            },
+            {
                 id: 'admin.alunos',
                 title: 'Alunos',
                 type: 'basic',

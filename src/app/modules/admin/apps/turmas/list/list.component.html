@@ -1,0 +1,139 @@
+<div class="absolute inset-0 flex min-w-0 flex-col overflow-y-auto" cdkScrollable>
+    <!-- Header -->
+    <div class="flex flex-none flex-col border-b px-6 py-8 sm:flex-row md:flex-col md:px-8"
+        style="background-color: white;">
+        <!-- Título -->
+        <div>
+            <div class="text-4xl font-extrabold leading-none tracking-tight">
+                Turmas
+            </div>
+            <div class="text-secondary ml-0.5 font-medium">
+                @if (this.turmas.length > 0) {
+                {{ turmas.length }}
+                }
+                {{
+                this.turmas.length
+                | i18nPlural
+                : {
+                '=0': 'Sem turmas cadastrados',
+                '=1': 'turma',
+                other: 'turmas',
+                }
+                }}
+            </div>
+        </div>
+
+        <!-- Ações principais -->
+        <div class="mt-4 flex items-center sm:mt-0 md:mt-4">
+            <!-- Pesquisa -->
+            <div class="flex-auto">
+                <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full min-w-50" [subscriptSizing]="'dynamic'">
+                    <mat-icon matPrefix class="icon-size-5" [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
+                    <input matInput (input)="filterByQuery(query.value)" placeholder="Buscar por ano, turno ou sufixo"
+                        matInput #query />
+                </mat-form-field>
+            </div>
+            <!-- Botão adicionar turma -->
+            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createTurma()">
+                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                <span class="ml-2 mr-1">Adicionar</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto px-6 sm:flex-row md:flex-col md:px-8">
+        <div class="flex w-full max-w-xs flex-auto flex-col sm:max-w-5xl">
+            <!-- Lista de turmas -->
+            @if (this.filteredTurmas.length) {
+            <div class="mt-8 grid grid-cols-1 gap-8 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">
+                @for (turma of filteredTurmas; track trackByFn($index, turma)) {
+                <div class="bg-card flex h-96 flex-col overflow-hidden rounded-2xl shadow">
+                    <div class="flex flex-col p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="rounded-full px-3 py-0.5 text-sm font-semibold" [ngClass]="{
+                                             'bg-yellow-100 text-yellow-800 dark:bg-yellow-500 dark:text-yellow-50': turma.shift === 1,
+                                             'bg-red-100 text-red-800 dark:bg-red-500 dark:text-red-50': turma.shift === 2,
+                                             'bg-gray-100 text-gray-800 dark:bg-gray-500 dark:text-gray-50': turma.shift === 3,
+                                             'bg-green-200 text-green-600 dark:bg-green-700 dark:text-green-300': !turma.shift
+                                         }">
+                                {{
+                                turma.shift === 1 ? 'Manhã' :
+                                turma.shift === 2 ? 'Tarde' :
+                                turma.shift === 3 ? 'Noite' : 'Turno indefinido'
+                                }}
+                            </div>
+                            <div class="flex items-center">
+                                @if (turma.shift === 3) {
+                                <mat-icon class="text-green-600 icon-size-5" [svgIcon]="'heroicons_solid:check-badge'"
+                                    [matTooltip]="'Você já participou dessa turma no turno da noite'">
+                                </mat-icon>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Título e descrição -->
+                        <div class="mt-4 text-lg font-medium">
+                            {{ turma.year }}º Ano {{ turma.suffix }}
+                        </div>
+                        <div class="text-secondary mt-0.5 line-clamp-2">
+                            {{
+                            turma.educationLevel === 1 ? 'Ensino Fundamental' :
+                            turma.educationLevel === 2 ? 'Ensino Médio' :
+                            turma.educationLevel === 3 ? 'Educação de Jovens e Adultos' : 'Descrição não disponível'
+                            }}
+                        </div>
+
+                        <div class="my-6 h-1 w-12 border-t-2"></div>
+
+                        <div class="text-secondary flex items-center text-md leading-5">
+                            <mat-icon class="text-hint icon-size-5" [svgIcon]="'heroicons_solid:user-group'"></mat-icon>
+                            <div class="ml-1.5">
+                                {{
+                                studentCounts.get(turma.id) || 0
+                                }} {{
+                                (studentCounts.get(turma.id) || 0) === 1 ? 'aluno' : 'alunos'
+                                }}
+                            </div>
+                        </div>
+
+                        <div class="text-secondary mt-2 flex items-center text-md leading-5">
+                            <mat-icon class="text-hint icon-size-5"
+                                [svgIcon]="'heroicons_solid:academic-cap'"></mat-icon>
+                            <div class="ml-1.5">
+                                {{
+                                teacherCounts.get(turma.id) || 0
+                                }} {{
+                                (teacherCounts.get(turma.id) || 0) === 1 ? 'professor' : 'professores'
+                                }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rodapé -->
+                    <div class="mt-auto flex w-full flex-col">
+                        <mat-progress-bar class="h-0.5" [value]="0"></mat-progress-bar>
+                        <div class="bg-gray-50 px-6 py-4 text-right dark:bg-transparent">
+                            <a mat-stroked-button [routerLink]="[turma.id]">
+                                <span class="inline-flex items-center">
+                                    Ver turma
+                                    <mat-icon class="ml-1.5 icon-size-5"
+                                        [svgIcon]="'heroicons_solid:arrow-small-right'">
+                                    </mat-icon>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            } @else {
+            <div class="border-t p-8 text-center text-4xl font-semibold tracking-tight sm:p-16">
+                <div class="text-secondary mb-6 text-2xl font-semibold tracking-tight">
+                    Nenhuma turma encontrada!
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>

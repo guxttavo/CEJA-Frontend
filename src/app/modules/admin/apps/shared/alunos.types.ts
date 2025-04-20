@@ -3,21 +3,23 @@ export interface Aluno {
     avatar?: string | null;
     background?: string | null;
     name: string;
-    emails?: {
-        email: string;
-        label: string;
-    }[];
+    email: string;
     phoneNumbers?: {
         country: string;
         phoneNumber: string;
         label: string;
     }[];
-    title?: string;
-    company?: string;
-    birthday?: string | null;
+    document: string;
+    password: string;
+    phone: string;
     address?: string | null;
+    bornDate: string;
+    passwordResetToken?: string;
+    passwordResetTokenExpiry?: string;
     notes?: string | null;
     tags?: string[];
+    classId?: number;
+    registrationNumber: number;
 }
 
 export interface Country {
