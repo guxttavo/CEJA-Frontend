@@ -1,7 +1,5 @@
 export interface Aluno {
-    id: string;
-    avatar?: string | null;
-    background?: string | null;
+    id: number;
     name: string;
     email: string;
     phoneNumbers?: {
@@ -20,17 +18,11 @@ export interface Aluno {
     tags?: string[];
     classId?: number;
     registrationNumber: number;
-}
-
-export interface Country {
-    id: string;
-    iso: string;
-    name: string;
-    code: string;
-    flagImagePos: string;
-}
-
-export interface Tag {
-    id?: string;
-    title?: string;
+    class?: {
+        id: number;
+        year: number;
+        shift: number; 
+        suffix: string;
+        educationLevel: string;
+    };
 }

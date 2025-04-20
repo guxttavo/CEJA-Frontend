@@ -24,19 +24,21 @@ const alunoResolver = (
     const alunosService = inject(AlunosService);
     const router = inject(Router);
 
-    return alunosService.getAlunoById(route.paramMap.get('id')).pipe(
-        // Error here means the requested aluno is not available
-        catchError((error) => {
-            // Log the error
-            console.error(error);
+    const idParam = route.paramMap.get('id');
+    const id = idParam ? + idParam : null;
 
-            // Get the parent url
+    if (id === null) {
+        router.navigateByUrl(state.url.split('/').slice(0, -1).join('/'));
+        return throwError(() => new Error('ID inválido'));
+    }
+
+    return alunosService.getAlunoById(id).pipe(
+        catchError((error) => {
+            console.error(error);
             const parentUrl = state.url.split('/').slice(0, -1).join('/');
 
-            // Navigate to there
             router.navigateByUrl(parentUrl);
 
-            // Throw an error
             return throwError(error);
         })
     );
@@ -76,7 +78,6 @@ const canDeactivateAlunosDetails = (
         return true;
     }
 
-    // Otherwise, close the drawer first, and then navigate
     return component.closeDrawer().then(() => true);
 };
 
@@ -92,19 +93,17 @@ export default [
                 path: '',
                 component: AlunosListComponent,
                 resolve: {
-                    // alunos: () => inject(AlunosService).getAlunos(),
-                    // countries: () => inject(AlunosService).getCountries(),
+                    alunos: () => inject(AlunosService).getAllStudents()
                 },
                 children: [
                     {
                         path: ':id',
                         component: AlunosDetailsComponent,
                         resolve: {
-                            aluno: alunoResolver,
-                            countries: () =>
-                                inject(AlunosService).getCountries(),
+                            alunos: alunoResolver
                         },
                         canDeactivate: [canDeactivateAlunosDetails],
+                        runGuardsAndResolvers: 'paramsChange' 
                     },
                 ],
             },

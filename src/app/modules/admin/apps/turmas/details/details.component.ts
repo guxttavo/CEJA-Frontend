@@ -64,7 +64,7 @@ export class TurmasDetailsComponent implements OnInit, OnDestroy {
     studentCounts: Map<number, number> = new Map();
     students: Aluno[] = [];
     filteredStudents: Aluno[] = [];
-    selectedStudentId: string | null = null;
+    selectedStudentId: number | null = null;
     selectedStudentName: string = '';
     isAddingStudent = false;
 
@@ -128,7 +128,7 @@ export class TurmasDetailsComponent implements OnInit, OnDestroy {
     }
 
     loadAllStudents(): void {
-        this._alunosService.getAlunos().subscribe((students) => {
+        this._alunosService.getAllStudents().subscribe((students) => {
             this.students = students;
         });
     }
@@ -139,7 +139,7 @@ export class TurmasDetailsComponent implements OnInit, OnDestroy {
             return;
         }
     
-        this._alunosService.getAlunos().subscribe({
+        this._alunosService.getAllStudents().subscribe({
             next: (students) => {
                 this.filteredStudents = students.filter(s =>
                     s.name.toLowerCase().includes(query.toLowerCase()) ||

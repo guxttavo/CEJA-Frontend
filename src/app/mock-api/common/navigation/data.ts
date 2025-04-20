@@ -22,7 +22,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'basic',
                 icon: 'heroicons_outline:user-group',
                 link: '/admin/alunos',
-            },
+            }
         ]
     },
     {

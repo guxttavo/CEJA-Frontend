@@ -1,4 +1,7 @@
-import { AsyncPipe, DOCUMENT, I18nPluralPipe, NgClass } from '@angular/common';
+import { AsyncPipe, DOCUMENT, I18nPluralPipe, NgClass, NgIf, NgForOf } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -27,9 +30,7 @@ import {
 } from '@angular/router';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { AlunosService } from 'app/modules/admin/apps/alunos/alunos.service';
-import {
-    Country,
-} from 'app/modules/admin/apps/shared/alunos.types';
+import { Aluno } from 'app/modules/admin/apps/shared/alunos.types';
 import {
     Observable,
     Subject,
@@ -38,7 +39,8 @@ import {
     switchMap,
     takeUntil,
 } from 'rxjs';
-import { Aluno } from 'app/modules/admin/apps/shared/alunos.types';
+import { TurmaService } from '../../turmas/turma.service';
+import { Turma } from '../../turmas/turma.types';
 
 @Component({
     selector: 'alunos-list',
@@ -59,16 +61,35 @@ import { Aluno } from 'app/modules/admin/apps/shared/alunos.types';
         RouterLink,
         AsyncPipe,
         I18nPluralPipe,
+        MatSelectModule,
+        MatSlideToggleModule,
+        NgIf,
+        NgForOf
     ],
 })
 export class AlunosListComponent implements OnInit, OnDestroy {
     @ViewChild('matDrawer', { static: true }) matDrawer: MatDrawer;
 
     alunos$: Observable<Aluno[]>;
+    turmas: Turma[];
+    alunos: Aluno[];
+
+    // variaveis referentes ao dropdown de turma e seus respectivos sub-dropdowns
+    selectedFilter: 'all' | 'turma' = 'all';
+    selectedTurmaFilter: 'year' | 'shift' | 'suffix' | 'educationLevel' | null = null;
+    // selectedTurmaId: number | null = null;
+    selectedTurmaShift: number | null = null;
+    anosDisponiveis: number[] = [];
+    periodosDisponiveis = [
+        { label: 'Manhã', value: 1 },
+        { label: 'Tarde', value: 2 },
+        { label: 'Noite', value: 3 }
+    ];
+    
+    sufixosDisponiveis: string[] = [];
+    selectedTurmaSuffix: string | null = null;
 
     alunosCount: number = 0;
-    alunosTableColumns: string[] = ['name', 'email', 'phoneNumber', 'job'];
-    countries: Country[];
     drawerMode: 'side' | 'over';
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedAluno: Aluno;
@@ -77,6 +98,7 @@ export class AlunosListComponent implements OnInit, OnDestroy {
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _changeDetectorRef: ChangeDetectorRef,
+        private _turmaService: TurmaService,
         private _alunosService: AlunosService,
         @Inject(DOCUMENT) private _document: any,
         private _router: Router,
@@ -85,103 +107,121 @@ export class AlunosListComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.alunos$ = this._alunosService.alunos$;
-    
-        this._alunosService.getAlunos().subscribe();
-    
+
+        this._alunosService.getAllStudents().subscribe();
+
         this.alunos$.pipe(takeUntil(this._unsubscribeAll)).subscribe((alunos) => {
             this.alunosCount = alunos?.length || 0;
             this._changeDetectorRef.markForCheck();
         });
 
-    //     this._alunosService.aluno$
-    //         .pipe(takeUntil(this._unsubscribeAll))
-    //         .subscribe((aluno: Aluno) => {
-    //             this.selectedAluno = aluno;
-    //             this._changeDetectorRef.markForCheck();
-    //         });
+        this._fuseMediaWatcherService.onMediaChange$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(({ matchingAliases }) => {
+                if (matchingAliases.includes('lg')) {
+                    this.drawerMode = 'side';
+                } else {
+                    this.drawerMode = 'over';
+                }
 
-    //     this._alunosService.countries$
-    //         .pipe(takeUntil(this._unsubscribeAll))
-    //         .subscribe((countries: Country[]) => {
-    //             this.countries = countries;
-    //             this._changeDetectorRef.markForCheck();
-    //         });
+                this._changeDetectorRef.markForCheck();
+            });
 
-    //     this.searchInputControl.valueChanges
-    //         .pipe(
-    //             takeUntil(this._unsubscribeAll),
-    //             switchMap((query) =>
-    //                 this._alunosService.searchAlunos(query)
-    //             )
-    //         )
-    //         .subscribe();
+        fromEvent(this._document, 'keydown')
+            .pipe(
+                takeUntil(this._unsubscribeAll),
+                filter<KeyboardEvent>(
+                    (event) =>
+                        (event.ctrlKey === true || event.metaKey) && // Ctrl or Cmd
+                        event.key === '/' // '/'
+                )
+            )
+            .subscribe(() => {
+                this.createAluno();
+            });
+    }
 
-    //     this.matDrawer.openedChange.subscribe((opened) => {
-    //         if (!opened) {
-               
-    //             this.selectedAluno = null;
-    //             this._changeDetectorRef.markForCheck();
-    //         }
-    //     }
+    createAluno(): void {
+        this._alunosService.createAluno().subscribe((newAluno) => {
+            this._router.navigate(['./', newAluno.id], {
+                relativeTo: this._activatedRoute,
+            });
+
+            this._changeDetectorRef.markForCheck();
+        });
+    }
+
+    onFilterChange(value: 'all' | 'turma'): void {
+        if (value === 'all') {
+            this._alunosService.getAllStudents().subscribe();
+            // this.selectedTurmaId = null;
+        }
+
+        if (value === 'turma') {
+            this._alunosService.getAllStudentsWithClass().subscribe((alunosComTurma) => {
+                this.alunos = alunosComTurma;
+                this.getYearFromStudent(alunosComTurma);
+            });
+            // this.selectedTurmaId = null;
+        }
+    }
+
+    onTurmaFilterChange(): void {
+        if (this.selectedTurmaFilter === 'year' && this.turmas?.length) {
+            this.getYearFromStudent(this.alunos);
+        }
+
+        if (this.selectedTurmaFilter === 'suffix') {
+            this.getSuffixFromStudent(this.alunos);
+            this.selectedTurmaSuffix = null;
+        }
+    }
+
+    getYearFromStudent(alunos: Aluno[]): void {
+        const anos = alunos.map(a => a.class.year);
+        this.anosDisponiveis = [...new Set(anos)].sort((a, b) => a - b)
+        console.log(anos);
+    }
+
+    getSuffixFromStudent(alunos: Aluno[]): void {
+        const sufixos = alunos.map(a => a.class.suffix);
+        this.sufixosDisponiveis = [...new Set(sufixos)].sort(); // ordem alfabética
+    }    
+
+    onTurmaYearSelected(year: number): void {
+        const alunosFiltrados = this.alunos.filter(a => a.class.year === year);
+        this._alunosService.setAlunos(alunosFiltrados);
+        this._changeDetectorRef.markForCheck();
+    }
+
+    onTurmaShiftSelected(shiftSelecionado: number): void {
+        if (!shiftSelecionado) return;
+
+        const alunosFiltrados = this.alunos.filter(a => a.class?.shift === shiftSelecionado);
+        this._alunosService.setAlunos(alunosFiltrados);
+        this._changeDetectorRef.markForCheck();
+    }
+
+    onTurmaSuffixSelected(suffixSelecionado: string): void {
+        if (!suffixSelecionado) return;
     
-    // );
-
-    //     this._fuseMediaWatcherService.onMediaChange$
-    //         .pipe(takeUntil(this._unsubscribeAll))
-    //         .subscribe(({ matchingAliases }) => {
-    //             if (matchingAliases.includes('lg')) {
-    //                 this.drawerMode = 'side';
-    //             } else {
-    //                 this.drawerMode = 'over';
-    //             }
-
-    //             this._changeDetectorRef.markForCheck();
-    //         });
-
-    //     fromEvent(this._document, 'keydown')
-    //         .pipe(
-    //             takeUntil(this._unsubscribeAll),
-    //             filter<KeyboardEvent>(
-    //                 (event) =>
-    //                     (event.ctrlKey === true || event.metaKey) && // Ctrl or Cmd
-    //                     event.key === '/' // '/'
-    //             )
-    //         )
-    //         .subscribe(() => {
-    //             this.createAluno();
-    //         });
-
-    }   
+        const alunosFiltrados = this.alunos.filter(a => a.class?.suffix === suffixSelecionado);
+        this._alunosService.setAlunos(alunosFiltrados);
+        this._changeDetectorRef.markForCheck();
+    }
+ 
+    
 
     ngOnDestroy(): void {
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
-    }    
+    }
 
     onBackdropClicked(): void {
         this._router.navigate(['./'], { relativeTo: this._activatedRoute });
         this._changeDetectorRef.markForCheck();
     }
 
-    createAluno(): void {
-        // Create the aluno
-        this._alunosService.createAluno().subscribe((newAluno) => {
-            // Go to the new aluno
-            this._router.navigate(['./', newAluno.id], {
-                relativeTo: this._activatedRoute,
-            });
-
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        });
-    }
-
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
     trackByFn(index: number, item: any): any {
         return item.id || index;
     }

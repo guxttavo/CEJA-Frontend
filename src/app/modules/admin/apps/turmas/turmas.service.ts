@@ -56,7 +56,7 @@ export class TurmasService extends BaseHttpService {
         );
     }
 
-    addStudentToClass(classId: number, studentId: string): Observable<any> {
+    addStudentToClass(classId: number, studentId: number): Observable<any> {
         return this._httpClient.post(`${this.apiUrl}/class/${classId}/addStudent/${studentId}`, {});
     }
 

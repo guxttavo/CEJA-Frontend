@@ -22,7 +22,7 @@ export class AlunosComponent {
     constructor(private _alunosService: AlunosService) {}
 
     ngOnInit(): void {
-        this._alunosService.getAlunos().subscribe(); // dispara a requisição
+        this._alunosService.getAllStudents().subscribe(); // dispara a requisição
         this.alunos$ = this._alunosService.alunos$;  // observa os dados atualizados
     }
 }
