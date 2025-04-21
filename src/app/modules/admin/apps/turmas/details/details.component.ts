@@ -143,7 +143,7 @@ export class TurmasDetailsComponent implements OnInit, OnDestroy {
             next: (students) => {
                 this.filteredStudents = students.filter(s =>
                     s.name.toLowerCase().includes(query.toLowerCase()) ||
-                    s.email?.toLowerCase().includes(query.toLowerCase())
+                    s.document?.toLowerCase().includes(query.toLowerCase())
                 );
             },
             error: () => {

@@ -50,13 +50,14 @@ export class CadastrarTurmaComponent implements OnInit {
 
     createTurma(): void {
         this._turmaService.createTurma(this.turma).subscribe({
-            next: () => this._matDialogRef.close(),
+            next: () => this._matDialogRef.close(true),
             error: (err) => console.error('Erro ao criar turma:', err)
         });
     }
 
     getShiftName(shift: number): string {
-        switch (shift) {
+        const numericShift = Number(shift);
+        switch (numericShift) {
             case 1:
                 return 'Manhã';
             case 2:
@@ -68,8 +69,9 @@ export class CadastrarTurmaComponent implements OnInit {
         }
     }
 
-    getEducationLevelName(level: number): string {
-        switch (level) {
+    getEducationLevelName(level: number | string): string {
+        const numericLevel = Number(level);
+        switch (numericLevel) {
             case 1: return 'Fundamental';
             case 2: return 'Médio';
             case 3: return 'Infantil';

@@ -1,34 +1,60 @@
-<div *ngIf="turma">
-    <div class="-m-6 flex flex-auto flex-col md:w-160 md:min-w-160">
-        <div class="m-4">
-            <div>
-                <input class="w-full p-2 text-2xl" [placeholder]="'Ano'" type="number" [(ngModel)]="turma.year">
-            </div>
-            <div>
-                <input class="w-full p-2 text-2xl" [placeholder]="'Período (1-Manhã, 2-Tarde, 3-Noite)'" type="number" [(ngModel)]="turma.shift">
-            </div>
-            <div>
-                <input class="w-full p-2 text-2xl" [placeholder]="'Sufixo'" type="text" [(ngModel)]="turma.suffix" (ngModelChange)="turma.suffix = $event.toUpperCase()" maxlength="1"
-                >
-            </div>
-            <div>
-                <input
-                    class="w-full p-2 text-2xl"
-                    [placeholder]="'Nível de Ensino (1-Fundamental, 2-Médio, 3-Infantil)'"
-                    type="number"
-                    maxlength="1"
-                    [(ngModel)]="turma.educationLevel">
-            </div>                   
+<div *ngIf="turma" class="p-6">
+    <!-- Preview -->
+    <div class="mb-6 text-xl font-semibold">
+        Cadastrar Turma
+    </div>
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <!-- Ano -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Ano</label>
+            <input type="number" [(ngModel)]="turma.year"
+                class="w-full rounded border px-3 py-2 text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="Ex: 1, 2, 3..." />
         </div>
 
-        <div class="mt-4 flex items-center justify-end">
-            <button mat-flat-button color="primary" (click)="createTurma()">
-                Save
-            </button>
+        <!-- Sufixo -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Sufixo</label>
+            <input type="text" maxlength="1" [(ngModel)]="turma.suffix"
+                (ngModelChange)="turma.suffix = $event.toUpperCase()"
+                class="w-full rounded border px-3 py-2 text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="Ex: A, B, C..." />
         </div>
-        <div *ngIf="turma.year" class="mt-6 text-xl font-semibold px-4">
-            {{ turma.year }}º Ano {{ getShiftName(turma.shift) }} {{ turma.suffix }} - {{ getEducationLevelName(turma.educationLevel) }}
+
+        <!-- Nível de Ensino -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Nível de Ensino</label>
+            <select [ngModel]="turma.educationLevel" (ngModelChange)="turma.educationLevel = +$event"
+                class="w-full rounded border px-3 py-2 text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                <option [value]="1">Ensino Fundamental</option>
+                <option [value]="2">Ensino Médio</option>
+                <option [value]="3">Educação Infantil</option>
+            </select>
         </div>
-        
+
+        <!-- Turno -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Turno</label>
+            <select [ngModel]="turma.shift" (ngModelChange)="turma.shift = +$event"
+                class="w-full rounded border px-3 py-2 text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                <option [value]="1">Manhã</option>
+                <option [value]="2">Tarde</option>
+                <option [value]="3">Noite</option>
+            </select>
+        </div>
+
+    </div>
+
+    <!-- Botão -->
+    <div class="mt-6 flex justify-end">
+        <button mat-flat-button color="primary" (click)="createTurma()">
+            Salvar
+        </button>
+    </div>
+
+    <!-- Preview -->
+    <div *ngIf="turma.year" class="mt-6 text-xl font-semibold px-2">
+        {{ turma.year }}º Ano {{ turma.suffix }} - {{ getEducationLevelName(turma.educationLevel) }} ({{
+        getShiftName(turma.shift) }})
     </div>
 </div>

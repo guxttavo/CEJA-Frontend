@@ -1,9 +1,10 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { I18nPluralPipe, NgClass, PercentPipe } from '@angular/common';
+import { DOCUMENT, I18nPluralPipe, NgClass, PercentPipe } from '@angular/common';
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    Inject,
     OnDestroy,
     OnInit,
     ViewEncapsulation,
@@ -25,6 +26,8 @@ import { FuseFindByKeyPipe } from '@fuse/pipes/find-by-key/find-by-key.pipe';
 import { TurmasService } from 'app/modules/admin/apps/turmas/turmas.service';
 import { Turma } from 'app/modules/admin/apps/shared/turmas.types';
 import { BehaviorSubject, Subject, combineLatest, takeUntil } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { CadastrarTurmaComponent } from '../labelCadastrar/cadastrarTurma.component';
 
 @Component({
     selector: 'turmas-list',
@@ -67,28 +70,13 @@ export class TurmasListComponent implements OnInit, OnDestroy {
         private _activatedRoute: ActivatedRoute,
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
-        private _turmasService: TurmasService
+        private _turmasService: TurmasService,
+        private _matDialog: MatDialog,
+        @Inject(DOCUMENT) private _document: any
     ) {}
 
     ngOnInit(): void {
-        this._turmasService.turmas$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((turmas: Turma[]) => {
-                this.turmas = this.filteredTurmas = turmas;
-                this._changeDetectorRef.markForCheck();
-                turmas.forEach(turma => {
-                    this._turmasService.getStudentCountByClassId(turma.id).subscribe(count => {
-                        this.studentCounts.set(turma.id, count);
-                        this._changeDetectorRef.markForCheck();
-                    });
-                
-                    this._turmasService.getTeacherCountByClassId(turma.id).subscribe(count => {
-                        this.teacherCounts.set(turma.id, count);
-                        this._changeDetectorRef.markForCheck();
-                    });
-                });
-                
-            });
+        this.loadTurmas();
     
         combineLatest([
             this.filters.query$,
@@ -134,16 +122,38 @@ export class TurmasListComponent implements OnInit, OnDestroy {
         return shift === 1 ? 'Manhã' : shift === 2 ? 'Tarde' : shift === 3 ? 'Noite' : '';
     }    
 
-    createTurma(): void {
-        // Create the aluno
-        // this._turmasService.createTurma().subscribe((newAluno) => {
-        //     // Go to the new aluno
-        //     this._router.navigate(['./', newAluno.id], {
-        //         relativeTo: this._activatedRoute,
-        //     });
+    addNewTurma(): void {
+        const dialogRef = this._matDialog.open(CadastrarTurmaComponent);
 
-        //     // Mark for check
-        //     this._changeDetectorRef.markForCheck();
-        // });
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result === true) {
+                this.loadTurmas()
+            }
+        });
     }
+
+    loadTurmas(): void {
+        this._turmasService.getTurmas().subscribe(() => {
+            this._turmasService.turmas$
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((turmas: Turma[]) => {
+                    this.turmas = this.filteredTurmas = turmas;
+                    this._changeDetectorRef.markForCheck();
+    
+                    turmas.forEach(turma => {
+                        this._turmasService.getStudentCountByClassId(turma.id).subscribe(count => {
+                            this.studentCounts.set(turma.id, count);
+                            this._changeDetectorRef.markForCheck();
+                        });
+    
+                        this._turmasService.getTeacherCountByClassId(turma.id).subscribe(count => {
+                            this.teacherCounts.set(turma.id, count);
+                            this._changeDetectorRef.markForCheck();
+                        });
+                    });
+                });
+        });
+    }
+    
+    
 }

@@ -108,6 +108,7 @@
                                                    [matAutocomplete]="auto"
                                                    [(ngModel)]="selectedStudentName"
                                                    name="studentName"
+                                                   placeholder="Buscar por nome ou CPF"
                                                    (input)="filterStudents($event.target.value)">
                                             <mat-autocomplete #auto="matAutocomplete"
                                                               (optionSelected)="onStudentSelected($event.option.value)">
