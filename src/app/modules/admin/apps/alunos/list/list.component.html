@@ -128,7 +128,7 @@
                             <img class="h-full w-full object-cover" [src]="aluno.avatar" alt="Avatar do aluno" />
                             }
                             @if (!aluno.avatar) {
-                            {{ aluno.name }}
+                                {{ aluno?.name.charAt(0) }}
                             }
                         </div>
                         <div class="ml-4 min-w-0">

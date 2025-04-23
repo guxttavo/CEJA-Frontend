@@ -60,6 +60,7 @@ export class AlunosListComponent implements OnInit, OnDestroy {
     alunos$: Observable<Aluno[]>;
     turmas: Turma[] = [];
     alunos: Aluno[] = [];
+    allAlunos: Aluno[] = [];
 
     selectedFilter: 'all' | 'turma' = 'all';
     selectedTurmaFilter: 'year' | 'shift' | 'suffix' | 'educationLevel' | null = null;
@@ -92,7 +93,10 @@ export class AlunosListComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.alunos$ = this._alunosService.alunos$;
 
-        this._alunosService.getAllStudents().subscribe();
+        this._alunosService.getAllStudents().subscribe((alunos) => {
+            this.allAlunos = alunos;
+            this._alunosService.setAlunos(alunos);
+        });
 
         this.alunos$.pipe(takeUntil(this._unsubscribeAll)).subscribe((alunos) => {
             this.alunos = alunos;
@@ -117,6 +121,20 @@ export class AlunosListComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                 this.createAluno();
             });
+
+        this.searchInputControl.valueChanges
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((searchText: string) => {
+                const termo = searchText?.toLowerCase() ?? '';
+
+                const resultados = this.allAlunos.filter((aluno) =>
+                    aluno.name.toLowerCase().includes(termo) ||
+                    aluno.document?.toLowerCase().includes(termo)
+                );
+
+                this._alunosService.setAlunos(resultados);
+                this._changeDetectorRef.markForCheck();
+            });
     }
 
     createAluno(): void {
@@ -139,12 +157,16 @@ export class AlunosListComponent implements OnInit, OnDestroy {
 
     onFilterChange(value: 'all' | 'turma'): void {
         if (value === 'all') {
-            this._alunosService.getAllStudents().subscribe();
+            this._alunosService.getAllStudents().subscribe((alunos) => {
+                this.allAlunos = alunos;
+                this._alunosService.setAlunos(alunos);
+            });
         }
 
         if (value === 'turma') {
             this._alunosService.getAllStudentsWithClass().subscribe((alunosComTurma) => {
-                this.alunos = alunosComTurma;
+                this.allAlunos = alunosComTurma;
+                this._alunosService.setAlunos(alunosComTurma);
                 this.getYearFromStudent(alunosComTurma);
             });
         }
@@ -172,23 +194,21 @@ export class AlunosListComponent implements OnInit, OnDestroy {
     }
 
     onTurmaYearSelected(year: number): void {
-        const alunosFiltrados = this.alunos.filter(a => a.class?.year === year);
+        const alunosFiltrados = this.allAlunos.filter(a => a.class?.year === year);
         this._alunosService.setAlunos(alunosFiltrados);
         this._changeDetectorRef.markForCheck();
     }
 
     onTurmaShiftSelected(shiftSelecionado: number): void {
         if (!shiftSelecionado) return;
-
-        const alunosFiltrados = this.alunos.filter(a => a.class?.shift === shiftSelecionado);
+        const alunosFiltrados = this.allAlunos.filter(a => a.class?.shift === shiftSelecionado);
         this._alunosService.setAlunos(alunosFiltrados);
         this._changeDetectorRef.markForCheck();
     }
 
     onTurmaSuffixSelected(suffixSelecionado: string): void {
         if (!suffixSelecionado) return;
-
-        const alunosFiltrados = this.alunos.filter(a => a.class?.suffix === suffixSelecionado);
+        const alunosFiltrados = this.allAlunos.filter(a => a.class?.suffix === suffixSelecionado);
         this._alunosService.setAlunos(alunosFiltrados);
         this._changeDetectorRef.markForCheck();
     }
