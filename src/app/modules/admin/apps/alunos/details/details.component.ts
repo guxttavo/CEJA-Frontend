@@ -1,7 +1,3 @@
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
-import { TextFieldModule } from '@angular/cdk/text-field';
-import { DatePipe, NgClass, NgIf } from '@angular/common';
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -9,133 +5,141 @@ import {
     ElementRef,
     OnDestroy,
     OnInit,
-    Renderer2,
-    TemplateRef,
     ViewChild,
-    ViewContainerRef,
     ViewEncapsulation,
 } from '@angular/core';
 import {
-    FormsModule,
-    ReactiveFormsModule,
-    UntypedFormArray,
     UntypedFormBuilder,
     UntypedFormGroup,
     Validators,
+    FormsModule,
+    ReactiveFormsModule,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatOptionModule, MatRippleModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDrawerToggleResult } from '@angular/material/sidenav';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { FuseFindByKeyPipe } from '@fuse/pipes/find-by-key/find-by-key.pipe';
-import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { AlunosService } from 'app/modules/admin/apps/alunos/alunos.service';
+import { MatDrawerToggleResult } from '@angular/material/sidenav';
+import { DatePipe, NgClass, NgIf, NgForOf } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Subject, takeUntil } from 'rxjs';
 
-import { AlunosListComponent } from 'app/modules/admin/apps/alunos/list/list.component';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { AlunosService } from '../alunos.service';
 import { Aluno } from '../../shared/alunos.types';
+import { AlunosListComponent } from '../list/list.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 
 @Component({
     selector: 'alunos-details',
     templateUrl: './details.component.html',
-    encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
     imports: [
-        MatButtonModule,
-        MatTooltipModule,
         RouterLink,
-        MatIconModule,
         FormsModule,
         ReactiveFormsModule,
-        MatRippleModule,
+        MatButtonModule,
+        MatTooltipModule,
         MatFormFieldModule,
         MatInputModule,
-        MatCheckboxModule,
-        NgClass,
+        MatIconModule,
         MatSelectModule,
-        MatOptionModule,
-        MatDatepickerModule,
-        TextFieldModule,
-        FuseFindByKeyPipe,
+        NgClass,
+        NgIf,
+        NgForOf,
         DatePipe,
-        NgIf
+        MatDatepickerModule,
+        MatNativeDateModule,
     ],
+    providers: [
+        { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }
+    ],
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AlunosDetailsComponent implements OnInit {
+export class AlunosDetailsComponent implements OnInit, OnDestroy {
     @ViewChild('avatarFileInput') private _avatarFileInput: ElementRef;
-    @ViewChild('tagsPanel') private _tagsPanel: TemplateRef<any>;
-    @ViewChild('tagsPanelOrigin') private _tagsPanelOrigin: ElementRef;
 
-    editMode: boolean = false;
-    tagsEditMode: boolean = false;
     aluno: Aluno;
     alunoForm: UntypedFormGroup;
-    alunos: Aluno[];
-    private _tagsPanelOverlayRef: OverlayRef;
+    editMode = false;
+
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    /**
-     * Constructor
-     */
     constructor(
-        private _activatedRoute: ActivatedRoute,
-        private _changeDetectorRef: ChangeDetectorRef,
         private _alunosListComponent: AlunosListComponent,
         private _alunosService: AlunosService,
         private _formBuilder: UntypedFormBuilder,
-        private _fuseConfirmationService: FuseConfirmationService,
-        private _renderer2: Renderer2,
-        private _router: Router,
-        private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _activatedRoute: ActivatedRoute,
+        private _router: Router
     ) { }
 
     ngOnInit(): void {
         this._alunosListComponent.matDrawer.open();
-    
+
         this.alunoForm = this._formBuilder.group({
             id: [''],
-            avatar: [null],
-            registrationNumber: [null],
-            name: ['', [Validators.required]],
-            email: [''],
+            name: ['', Validators.required],
+            email: ['', Validators.required],
             phone: [''],
+            document: [''],
+            bornDate: [''],
+            registrationNumber: [''],
             address: [''],
-            bornDate: [null],
+            password: [''],
+            tags: [[]],
         });
-    
-        // Reage a troca de ID na URL
-        this._activatedRoute.paramMap
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(params => {
-                const id = +params.get('id');
-                if (id) {
-                    this._alunosService.getAlunoById(id).subscribe();
-                }
-            });
-    
-        // Atualiza a UI quando o aluno mudar
+
         this._alunosService.aluno$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((aluno: Aluno) => {
                 if (!aluno) return;
-    
+
                 this.aluno = aluno;
                 this.alunoForm.patchValue(aluno);
+                this.toggleEditMode(false);
                 this._changeDetectorRef.markForCheck();
             });
     }
 
+    ngOnDestroy(): void {
+        this._unsubscribeAll.next(null);
+        this._unsubscribeAll.complete();
+    }
+
     closeDrawer(): Promise<MatDrawerToggleResult> {
         return this._alunosListComponent.matDrawer.close();
+    }
+
+    toggleEditMode(editMode: boolean | null = null): void {
+        this.editMode = editMode === null ? !this.editMode : editMode;
+        this._changeDetectorRef.markForCheck();
+    }
+
+    updateAluno(): void {
+        const aluno = this.alunoForm.getRawValue();
+    
+        this._alunosService.updateAluno(aluno.id, aluno).subscribe(() => {
+            this._alunosService.getAlunoById(aluno.id).subscribe(() => {
+                this.toggleEditMode(false);
+                this._changeDetectorRef.markForCheck();
+            });
+        });
+    }
+    
+
+    deleteAluno(): void {
+        const id = this.aluno.id;
+        this._alunosService.deleteAluno(id).subscribe(() => {
+            this.closeDrawer().then(() => {
+                this._router.navigate(['../'], {
+                    relativeTo: this._activatedRoute,
+                });
+            });
+        });
     }
 
     trackByFn(index: number, item: any): any {

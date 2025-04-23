@@ -1,7 +1,6 @@
 import { AsyncPipe, DOCUMENT, I18nPluralPipe, NgClass, NgIf, NgForOf } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -22,23 +21,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
-import {
-    ActivatedRoute,
-    Router,
-    RouterLink,
-    RouterOutlet,
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { AlunosService } from 'app/modules/admin/apps/alunos/alunos.service';
 import { Aluno } from 'app/modules/admin/apps/shared/alunos.types';
-import {
-    Observable,
-    Subject,
-    filter,
-    fromEvent,
-    switchMap,
-    takeUntil,
-} from 'rxjs';
+import { Observable, Subject, filter, fromEvent, takeUntil } from 'rxjs';
 import { TurmaService } from '../../turmas/turma.service';
 import { Turma } from '../../turmas/turma.types';
 
@@ -71,13 +58,11 @@ export class AlunosListComponent implements OnInit, OnDestroy {
     @ViewChild('matDrawer', { static: true }) matDrawer: MatDrawer;
 
     alunos$: Observable<Aluno[]>;
-    turmas: Turma[];
-    alunos: Aluno[];
+    turmas: Turma[] = [];
+    alunos: Aluno[] = [];
 
-    // variaveis referentes ao dropdown de turma e seus respectivos sub-dropdowns
     selectedFilter: 'all' | 'turma' = 'all';
     selectedTurmaFilter: 'year' | 'shift' | 'suffix' | 'educationLevel' | null = null;
-    // selectedTurmaId: number | null = null;
     selectedTurmaShift: number | null = null;
     anosDisponiveis: number[] = [];
     periodosDisponiveis = [
@@ -85,7 +70,6 @@ export class AlunosListComponent implements OnInit, OnDestroy {
         { label: 'Tarde', value: 2 },
         { label: 'Noite', value: 3 }
     ];
-    
     sufixosDisponiveis: string[] = [];
     selectedTurmaSuffix: string | null = null;
 
@@ -111,6 +95,7 @@ export class AlunosListComponent implements OnInit, OnDestroy {
         this._alunosService.getAllStudents().subscribe();
 
         this.alunos$.pipe(takeUntil(this._unsubscribeAll)).subscribe((alunos) => {
+            this.alunos = alunos;
             this.alunosCount = alunos?.length || 0;
             this._changeDetectorRef.markForCheck();
         });
@@ -118,12 +103,7 @@ export class AlunosListComponent implements OnInit, OnDestroy {
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({ matchingAliases }) => {
-                if (matchingAliases.includes('lg')) {
-                    this.drawerMode = 'side';
-                } else {
-                    this.drawerMode = 'over';
-                }
-
+                this.drawerMode = matchingAliases.includes('lg') ? 'side' : 'over';
                 this._changeDetectorRef.markForCheck();
             });
 
@@ -131,9 +111,7 @@ export class AlunosListComponent implements OnInit, OnDestroy {
             .pipe(
                 takeUntil(this._unsubscribeAll),
                 filter<KeyboardEvent>(
-                    (event) =>
-                        (event.ctrlKey === true || event.metaKey) && // Ctrl or Cmd
-                        event.key === '/' // '/'
+                    (event) => (event.ctrlKey === true || event.metaKey) && event.key === '/'
                 )
             )
             .subscribe(() => {
@@ -142,11 +120,19 @@ export class AlunosListComponent implements OnInit, OnDestroy {
     }
 
     createAluno(): void {
-        this._alunosService.createAluno().subscribe((newAluno) => {
-            this._router.navigate(['./', newAluno.id], {
-                relativeTo: this._activatedRoute,
-            });
+        const newAluno: Aluno = {
+            id: 0,
+            name: 'Novo Aluno',
+            email: '',
+            phone: '',
+            document: '',
+            password: '',
+            bornDate: new Date().toISOString(),
+            registrationNumber: 0
+        };
 
+        this._alunosService.createAluno(newAluno).subscribe((created) => {
+            this._router.navigate(['./', created.id], { relativeTo: this._activatedRoute });
             this._changeDetectorRef.markForCheck();
         });
     }
@@ -154,7 +140,6 @@ export class AlunosListComponent implements OnInit, OnDestroy {
     onFilterChange(value: 'all' | 'turma'): void {
         if (value === 'all') {
             this._alunosService.getAllStudents().subscribe();
-            // this.selectedTurmaId = null;
         }
 
         if (value === 'turma') {
@@ -162,12 +147,11 @@ export class AlunosListComponent implements OnInit, OnDestroy {
                 this.alunos = alunosComTurma;
                 this.getYearFromStudent(alunosComTurma);
             });
-            // this.selectedTurmaId = null;
         }
     }
 
     onTurmaFilterChange(): void {
-        if (this.selectedTurmaFilter === 'year' && this.turmas?.length) {
+        if (this.selectedTurmaFilter === 'year' && this.alunos?.length) {
             this.getYearFromStudent(this.alunos);
         }
 
@@ -178,18 +162,17 @@ export class AlunosListComponent implements OnInit, OnDestroy {
     }
 
     getYearFromStudent(alunos: Aluno[]): void {
-        const anos = alunos.map(a => a.class.year);
-        this.anosDisponiveis = [...new Set(anos)].sort((a, b) => a - b)
-        console.log(anos);
+        const anos = alunos.map(a => a.class?.year).filter(Boolean);
+        this.anosDisponiveis = [...new Set(anos)].sort((a, b) => a - b);
     }
 
     getSuffixFromStudent(alunos: Aluno[]): void {
-        const sufixos = alunos.map(a => a.class.suffix);
-        this.sufixosDisponiveis = [...new Set(sufixos)].sort(); // ordem alfabética
-    }    
+        const sufixos = alunos.map(a => a.class?.suffix).filter(Boolean);
+        this.sufixosDisponiveis = [...new Set(sufixos)].sort();
+    }
 
     onTurmaYearSelected(year: number): void {
-        const alunosFiltrados = this.alunos.filter(a => a.class.year === year);
+        const alunosFiltrados = this.alunos.filter(a => a.class?.year === year);
         this._alunosService.setAlunos(alunosFiltrados);
         this._changeDetectorRef.markForCheck();
     }
@@ -204,22 +187,20 @@ export class AlunosListComponent implements OnInit, OnDestroy {
 
     onTurmaSuffixSelected(suffixSelecionado: string): void {
         if (!suffixSelecionado) return;
-    
+
         const alunosFiltrados = this.alunos.filter(a => a.class?.suffix === suffixSelecionado);
         this._alunosService.setAlunos(alunosFiltrados);
         this._changeDetectorRef.markForCheck();
-    }
- 
-    
-
-    ngOnDestroy(): void {
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
     }
 
     onBackdropClicked(): void {
         this._router.navigate(['./'], { relativeTo: this._activatedRoute });
         this._changeDetectorRef.markForCheck();
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribeAll.next(null);
+        this._unsubscribeAll.complete();
     }
 
     trackByFn(index: number, item: any): any {

@@ -10,7 +10,7 @@
             <!-- Main -->
             <div class="flex-auto">
                 <!-- Header -->
-                <div class="flex flex-auto flex-col justify-between border-b px-6 py-8 sm:flex-row md:flex-col md:px-8">
+                <div class="flex flex-auto flex-col justify-between px-6 pt-8 pb-2 sm:flex-row md:flex-col md:px-8">
                     <!-- Title -->
                     <div>
                         <div class="text-4xl font-extrabold leading-none tracking-tight">
@@ -42,22 +42,22 @@
                                         'heroicons_solid:magnifying-glass'
                                     "></mat-icon>
                                 <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
-                                    [placeholder]="'Search alunos'" />
+                                    [placeholder]="'Buscar por nome ou CPF'" />
                             </mat-form-field>
                         </div>
                         <!-- Add aluno button -->
                         <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createAluno()">
                             <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                            <span class="ml-2 mr-1">Add</span>
+                            <span class="ml-2 mr-1">Adicionar</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Filter -->
-                <div class="flex w-full flex-wrap items-center gap-4 px-6 py-4">
+                <div class="flex w-full flex-wrap items-center gap-4 px-6 py-4 ml-2">
 
                     <!-- Dropdown principal -->
-                    <mat-form-field class="w-full sm:w-36" subscriptSizing="dynamic">
+                    <mat-form-field class="fuse-mat-rounded w-full sm:w-36" subscriptSizing="dynamic">
                         <mat-select [(value)]="selectedFilter" (selectionChange)="onFilterChange($event.value)">
                             <mat-option value="all">Todos</mat-option>
                             <mat-option value="turma">Turma</mat-option>
@@ -65,7 +65,7 @@
                     </mat-form-field>
 
                     <!-- Dropdown secundário: visível apenas se "turma" for selecionado -->
-                    <mat-form-field *ngIf="selectedFilter === 'turma'" class="w-full sm:w-72" subscriptSizing="dynamic">
+                    <mat-form-field *ngIf="selectedFilter === 'turma'" class="fuse-mat-rounded w-full sm:w-72" subscriptSizing="dynamic">
                         <mat-select placeholder="Filtrar por..." [(value)]="selectedTurmaFilter"
                             (selectionChange)="onTurmaFilterChange()">
                             <mat-option value="year">Ano</mat-option>
@@ -77,7 +77,7 @@
 
                     <!-- Dropdown de valores (dinâmico) -->
                     <mat-form-field *ngIf="selectedTurmaFilter === 'year' && selectedFilter === 'turma'"
-                        class="w-full sm:w-72" subscriptSizing="dynamic">
+                        class="fuse-mat-rounded w-full sm:w-72" subscriptSizing="dynamic">
                         <mat-select placeholder="Selecione o ano" [(value)]="selectedTurmaYear"
                             (selectionChange)="onTurmaYearSelected($event.value)">
                             <mat-option *ngFor="let ano of anosDisponiveis" [value]="ano">
@@ -88,7 +88,7 @@
 
                     <!-- Dropdown de períodos (dinâmico) -->
                     <mat-form-field *ngIf="selectedTurmaFilter === 'shift' && selectedFilter === 'turma'"
-                        class="w-full sm:w-72" subscriptSizing="dynamic">
+                        class="fuse-mat-rounded w-full sm:w-72" subscriptSizing="dynamic">
                         <mat-select placeholder="Selecione o período" [(value)]="selectedTurmaShift"
                             (selectionChange)="onTurmaShiftSelected($event.value)">
                             <mat-option *ngFor="let p of periodosDisponiveis" [value]="p.value">
@@ -99,7 +99,7 @@
 
                     <!-- Dropdown de sufixo (dinâmico) -->
                     <mat-form-field *ngIf="selectedTurmaFilter === 'suffix' && selectedFilter === 'turma'"
-                        class="w-full sm:w-72" subscriptSizing="dynamic">
+                        class="fuse-mat-rounded w-full sm:w-72" subscriptSizing="dynamic">
                         <mat-select placeholder="Selecione o sufixo" [(value)]="selectedTurmaSuffix"
                             (selectionChange)="onTurmaSuffixSelected($event.value)">
                             <mat-option *ngFor="let s of sufixosDisponiveis" [value]="s">

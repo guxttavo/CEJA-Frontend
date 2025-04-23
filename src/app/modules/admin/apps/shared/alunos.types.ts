@@ -1,6 +1,7 @@
 export interface Aluno {
     id: number;
     name: string;
+    avatar?: string;
     email: string;
     phoneNumbers?: {
         country: string;

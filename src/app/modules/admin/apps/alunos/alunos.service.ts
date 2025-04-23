@@ -7,7 +7,7 @@ import { Aluno } from '../shared/alunos.types';
 import { Country, Tag } from '../turmas/turma.types';
 
 @Injectable({ providedIn: 'root' })
-export class AlunosService extends BaseHttpService{
+export class AlunosService extends BaseHttpService {
     private _aluno: BehaviorSubject<Aluno | null> = new BehaviorSubject(null);
     private _alunos: BehaviorSubject<Aluno[] | null> = new BehaviorSubject(null);
     private _countries: BehaviorSubject<Country[] | null> = new BehaviorSubject(null);
@@ -27,9 +27,9 @@ export class AlunosService extends BaseHttpService{
     }
 
     getAllStudents(): Observable<Aluno[]> {
-        return this._httpClient.get<Aluno[]>(`${this.apiUrl}/Student`).pipe(
-            tap((alunos) => this._alunos.next(alunos)),
-            catchError((error) => {
+        return this._httpClient.get<Aluno[]>(`${this.apiUrl}/student`).pipe(
+            tap(alunos => this._alunos.next(alunos)),
+            catchError(error => {
                 console.error('Erro ao buscar alunos:', error);
                 return throwError(() => error);
             })
@@ -37,59 +37,71 @@ export class AlunosService extends BaseHttpService{
     }
 
     getAllStudentsWithClass(): Observable<Aluno[]> {
-        return this._httpClient.get<Aluno[]>(`${this.apiUrl}/Student/GetAllStudentsWithClass`).pipe(
-            tap((alunos) => this._alunos.next(alunos)), 
-            catchError((error) => {
+        return this._httpClient.get<Aluno[]>(`${this.apiUrl}/student/GetAllStudentsWithClass`).pipe(
+            tap(alunos => this._alunos.next(alunos)), 
+            catchError(error => {
                 console.error('Erro ao buscar alunos com turma:', error);
                 return throwError(() => error);
             })
         );
     }
-    
+
+    getAlunoById(id: number): Observable<Aluno> {
+        return this._httpClient.get<Aluno>(`${this.apiUrl}/student/${id}`).pipe(
+            tap(aluno => this._aluno.next(aluno)),
+            catchError(error => {
+                console.error(`Erro ao buscar aluno com id ${id}:`, error);
+                return throwError(() => new Error(`Aluno não encontrado com id: ${id}`));
+            })
+        );
+    }
+
+    getStudentsByClassId(classId: number): Observable<Aluno[]> {
+        return this._httpClient.get<Aluno[]>(`${this.apiUrl}/student/buscarAlunoPorTurma/${classId}`).pipe(
+            catchError(error => {
+                console.error(`Erro ao buscar alunos da turma ${classId}:`, error);
+                return throwError(() => new Error('Erro ao buscar alunos da turma'));
+            })
+        );
+    }
+
+    createAluno(aluno: Aluno): Observable<Aluno> {
+        return this._httpClient.post<Aluno>(`${this.apiUrl}/student`, aluno).pipe(
+            tap(() => this.getAllStudents().subscribe()), // Atualiza lista após criação
+            catchError(error => {
+                console.error('Erro ao criar aluno:', error);
+                return throwError(() => new Error('Erro ao criar aluno'));
+            })
+        );
+    }
+
+    updateAluno(id: number, aluno: Aluno): Observable<void> {
+        return this._httpClient.put<void>(`${this.apiUrl}/student/${id}`, aluno).pipe(
+            tap(() => this.getAllStudents().subscribe()), // Atualiza lista após edição
+            catchError(error => {
+                console.error('Erro ao atualizar aluno:', error);
+                return throwError(() => new Error('Erro ao atualizar aluno'));
+            })
+        );
+    }
+
+    deleteAluno(id: number): Observable<void> {
+        return this._httpClient.delete<void>(`${this.apiUrl}/student/${id}`).pipe(
+            tap(() => this.getAllStudents().subscribe()), // Atualiza lista após exclusão
+            catchError(error => {
+                console.error('Erro ao deletar aluno:', error);
+                return throwError(() => new Error('Erro ao deletar aluno'));
+            })
+        );
+    }
+
     searchAlunos(query: string): Observable<Aluno[]> {
         return this._httpClient.get<Aluno[]>(`${this.apiUrl}/student`, { params: { query } }).pipe(
-            tap((alunos) => {
-                this._alunos.next(alunos);
-            }),
-            catchError((error) => {
+            tap(alunos => this._alunos.next(alunos)),
+            catchError(error => {
                 console.error('Erro ao buscar alunos com query:', error);
                 return throwError(() => new Error('Erro ao buscar alunos com query'));
             })
-        );
-    }
-
-    getAlunoById(id: number): Observable<Aluno> {
-        return this._alunos.pipe(
-            take(1),
-            map((alunos) => {
-                const aluno = alunos.find((item) => item.id == id) || null;
-                this._aluno.next(aluno);
-                return aluno;
-            }),
-            switchMap((aluno) => {
-                if (!aluno) {
-                    return throwError(() => new Error('Aluno não encontrado com id: ' + id));
-                }
-                return of(aluno);
-            })
-        );
-    }
-
-    createAluno(): Observable<Aluno> {
-        return this.alunos$.pipe(
-            take(1),
-            switchMap((alunos) =>
-                this._httpClient.post<Aluno>('api/apps/alunos/aluno', {}).pipe(
-                    map((newAluno) => {
-                        this._alunos.next([newAluno, ...alunos]);
-                        return newAluno;
-                    }),
-                    catchError((error) => {
-                        console.error('Erro ao criar aluno:', error);
-                        return throwError(() => new Error('Erro ao criar aluno'));
-                    })
-                )
-            )
         );
     }
 
