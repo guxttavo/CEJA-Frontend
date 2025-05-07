@@ -15,6 +15,9 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms';
+import { NotaService } from '../notas/notas.service';
+import { MatDialog } from '@angular/material/dialog';
+import { NotasDialogComponent } from '../notas/notas.component'; 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { DatePipe, NgClass, NgIf, NgForOf } from '@angular/common';
@@ -74,7 +77,9 @@ export class AlunosDetailsComponent implements OnInit, OnDestroy {
         private _formBuilder: UntypedFormBuilder,
         private _changeDetectorRef: ChangeDetectorRef,
         private _activatedRoute: ActivatedRoute,
-        private _router: Router
+        private _router: Router,
+        private _dialog: MatDialog,
+        private _notaService: NotaService
     ) { }
 
     ngOnInit(): void {
@@ -130,7 +135,18 @@ export class AlunosDetailsComponent implements OnInit, OnDestroy {
         });
     }
     
-
+    verNotas(): void {
+        this._notaService.getGradeStudent(this.aluno.id).subscribe((notas) => {
+            this._dialog.open(NotasDialogComponent, {
+                width: '500px',
+                data: {
+                    name: this.aluno.name,
+                    notas: notas
+                }
+            });
+        });
+    }
+    
     deleteAluno(): void {
         const id = this.aluno.id;
         this._alunosService.deleteAluno(id).subscribe(() => {

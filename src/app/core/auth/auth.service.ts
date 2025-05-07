@@ -4,6 +4,7 @@ import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { BaseHttpService } from '../base/base-http.service';
+import { CadastrarAlunoProfessor } from 'app/modules/admin/apps/shared/cadastrarAlunoProfessor.types';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends BaseHttpService{
@@ -16,6 +17,25 @@ export class AuthService extends BaseHttpService{
         super(http);
         this.rememberMe = localStorage.getItem('rememberMe') === 'true';
     }
+
+    signUpStudent(user: Omit<CadastrarAlunoProfessor, 'role'>): Observable<any> {
+        return this._httpClient.post(`${this.apiUrl}/students`, user).pipe(
+            switchMap((response: any) => of(response)),
+            catchError(() => {
+                return throwError(() => 'Falha ao cadastrar aluno. Verifique os dados.');
+            })
+        );
+    }
+
+    signUpTeacher(user: Omit<CadastrarAlunoProfessor, 'role'>): Observable<any> {
+        return this._httpClient.post(`${this.apiUrl}/teachers`, user).pipe(
+            switchMap((response: any) => of(response)),
+            catchError(() => {
+                return throwError(() => 'Falha ao cadastrar professor. Verifique os dados.');
+            })
+        );
+    }
+    
 
     set accessToken(token: string) {
         if (this.rememberMe) {
