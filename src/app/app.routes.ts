@@ -54,7 +54,7 @@ export const appRoutes: Route[] = [
             {
                 path: 'admin',
                 children: [
-                    { path: 'alunos', loadChildren: () => import('app/modules/admin/apps/alunos/alunos.routes') },
+                    { path: 'alunos', loadChildren: () => import('app/modules/admin/apps/students/students.routes') },
                     { path: 'turmas', loadChildren: () => import('app/modules/admin/apps/turmas/turmas.routes') },
                 ]
             },

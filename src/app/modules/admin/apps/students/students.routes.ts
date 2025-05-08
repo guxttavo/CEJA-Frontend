@@ -5,10 +5,10 @@ import {
     RouterStateSnapshot,
     Routes,
 } from '@angular/router';
-import { AlunosComponent } from 'app/modules/admin/apps/alunos/alunos.component';
-import { AlunosService } from 'app/modules/admin/apps/alunos/alunos.service';
-import { AlunosDetailsComponent } from 'app/modules/admin/apps/alunos/details/details.component';
-import { AlunosListComponent } from 'app/modules/admin/apps/alunos/list/list.component';
+import { StudentsComponent } from 'app/modules/admin/apps/students/students.component';
+import { StudentsService } from 'app/modules/admin/apps/students/students.service';
+import { AlunosDetailsComponent } from 'app/modules/admin/apps/students/details/details.component';
+import { AlunosListComponent } from 'app/modules/admin/apps/students/list/list.component';
 import { catchError, throwError } from 'rxjs';
 
 /**
@@ -21,7 +21,7 @@ const alunoResolver = (
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
 ) => {
-    const alunosService = inject(AlunosService);
+    const alunosService = inject(StudentsService);
     const router = inject(Router);
 
     const idParam = route.paramMap.get('id');
@@ -84,7 +84,7 @@ const canDeactivateAlunosDetails = (
 export default [
     {
         path: '',
-        component: AlunosComponent,
+        component: StudentsComponent,
         // resolve: {
         //     tags: () => inject(AlunosService).getTags(),
         // },
@@ -93,7 +93,7 @@ export default [
                 path: '',
                 component: AlunosListComponent,
                 resolve: {
-                    alunos: () => inject(AlunosService).getAllStudents()
+                    alunos: () => inject(StudentsService).getAllStudents()
                 },
                 children: [
                     {

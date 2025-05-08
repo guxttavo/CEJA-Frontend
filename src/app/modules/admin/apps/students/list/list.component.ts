@@ -23,8 +23,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { AlunosService } from 'app/modules/admin/apps/alunos/alunos.service';
-import { Aluno } from 'app/modules/admin/apps/shared/alunos.types';
+import { StudentsService } from 'app/modules/admin/apps/students/students.service';
+import { Student } from 'app/modules/admin/apps/shared/students.types';
 import { Observable, Subject, filter, fromEvent, takeUntil } from 'rxjs';
 import { TurmaService } from '../../turmas/turma.service';
 import { Turma } from '../../turmas/turma.types';
@@ -57,10 +57,10 @@ import { Turma } from '../../turmas/turma.types';
 export class AlunosListComponent implements OnInit, OnDestroy {
     @ViewChild('matDrawer', { static: true }) matDrawer: MatDrawer;
 
-    alunos$: Observable<Aluno[]>;
+    alunos$: Observable<Student[]>;
     turmas: Turma[] = [];
-    alunos: Aluno[] = [];
-    allAlunos: Aluno[] = [];
+    alunos: Student[] = [];
+    allAlunos: Student[] = [];
 
     selectedFilter: 'all' | 'turma' = 'all';
     selectedTurmaFilter: 'year' | 'shift' | 'suffix' | 'educationLevel' | null = null;
@@ -77,25 +77,25 @@ export class AlunosListComponent implements OnInit, OnDestroy {
     alunosCount: number = 0;
     drawerMode: 'side' | 'over';
     searchInputControl: UntypedFormControl = new UntypedFormControl();
-    selectedAluno: Aluno;
+    selectedAluno: Student;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _changeDetectorRef: ChangeDetectorRef,
         private _turmaService: TurmaService,
-        private _alunosService: AlunosService,
+        private _studentsService: StudentsService,
         @Inject(DOCUMENT) private _document: any,
         private _router: Router,
         private _fuseMediaWatcherService: FuseMediaWatcherService
     ) { }
 
     ngOnInit(): void {
-        this.alunos$ = this._alunosService.alunos$;
+        this.alunos$ = this._studentsService.alunos$;
 
-        this._alunosService.getAllStudents().subscribe((alunos) => {
+        this._studentsService.getAllStudents().subscribe((alunos) => {
             this.allAlunos = alunos;
-            this._alunosService.setAlunos(alunos);
+            this._studentsService.setAlunos(alunos);
         });
 
         this.alunos$.pipe(takeUntil(this._unsubscribeAll)).subscribe((alunos) => {
@@ -132,13 +132,13 @@ export class AlunosListComponent implements OnInit, OnDestroy {
                     aluno.document?.toLowerCase().includes(termo)
                 );
 
-                this._alunosService.setAlunos(resultados);
+                this._studentsService.setAlunos(resultados);
                 this._changeDetectorRef.markForCheck();
             });
     }
 
     createAluno(): void {
-        const newAluno: Aluno = {
+        const newAluno: Student = {
             id: 0,
             name: 'Novo Aluno',
             email: '',
@@ -149,7 +149,7 @@ export class AlunosListComponent implements OnInit, OnDestroy {
             registrationNumber: 0
         };
 
-        this._alunosService.createAluno(newAluno).subscribe((created) => {
+        this._studentsService.createAluno(newAluno).subscribe((created) => {
             this._router.navigate(['./', created.id], { relativeTo: this._activatedRoute });
             this._changeDetectorRef.markForCheck();
         });
@@ -157,16 +157,16 @@ export class AlunosListComponent implements OnInit, OnDestroy {
 
     onFilterChange(value: 'all' | 'turma'): void {
         if (value === 'all') {
-            this._alunosService.getAllStudents().subscribe((alunos) => {
+            this._studentsService.getAllStudents().subscribe((alunos) => {
                 this.allAlunos = alunos;
-                this._alunosService.setAlunos(alunos);
+                this._studentsService.setAlunos(alunos);
             });
         }
 
         if (value === 'turma') {
-            this._alunosService.getAllStudentsWithClass().subscribe((alunosComTurma) => {
+            this._studentsService.getAllStudentsWithClass().subscribe((alunosComTurma) => {
                 this.allAlunos = alunosComTurma;
-                this._alunosService.setAlunos(alunosComTurma);
+                this._studentsService.setAlunos(alunosComTurma);
                 this.getYearFromStudent(alunosComTurma);
             });
         }
@@ -183,33 +183,33 @@ export class AlunosListComponent implements OnInit, OnDestroy {
         }
     }
 
-    getYearFromStudent(alunos: Aluno[]): void {
+    getYearFromStudent(alunos: Student[]): void {
         const anos = alunos.map(a => a.class?.year).filter(Boolean);
         this.anosDisponiveis = [...new Set(anos)].sort((a, b) => a - b);
     }
 
-    getSuffixFromStudent(alunos: Aluno[]): void {
+    getSuffixFromStudent(alunos: Student[]): void {
         const sufixos = alunos.map(a => a.class?.suffix).filter(Boolean);
         this.sufixosDisponiveis = [...new Set(sufixos)].sort();
     }
 
     onTurmaYearSelected(year: number): void {
         const alunosFiltrados = this.allAlunos.filter(a => a.class?.year === year);
-        this._alunosService.setAlunos(alunosFiltrados);
+        this._studentsService.setAlunos(alunosFiltrados);
         this._changeDetectorRef.markForCheck();
     }
 
     onTurmaShiftSelected(shiftSelecionado: number): void {
         if (!shiftSelecionado) return;
         const alunosFiltrados = this.allAlunos.filter(a => a.class?.shift === shiftSelecionado);
-        this._alunosService.setAlunos(alunosFiltrados);
+        this._studentsService.setAlunos(alunosFiltrados);
         this._changeDetectorRef.markForCheck();
     }
 
     onTurmaSuffixSelected(suffixSelecionado: string): void {
         if (!suffixSelecionado) return;
         const alunosFiltrados = this.allAlunos.filter(a => a.class?.suffix === suffixSelecionado);
-        this._alunosService.setAlunos(alunosFiltrados);
+        this._studentsService.setAlunos(alunosFiltrados);
         this._changeDetectorRef.markForCheck();
     }
 

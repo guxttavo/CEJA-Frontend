@@ -29,8 +29,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject, takeUntil } from 'rxjs';
 
-import { AlunosService } from '../alunos.service';
-import { Aluno } from '../../shared/alunos.types';
+import { StudentsService } from '../students.service';
+import { Student } from '../../shared/students.types';
 import { AlunosListComponent } from '../list/list.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -65,7 +65,7 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 export class AlunosDetailsComponent implements OnInit, OnDestroy {
     @ViewChild('avatarFileInput') private _avatarFileInput: ElementRef;
 
-    aluno: Aluno;
+    aluno: Student;
     alunoForm: UntypedFormGroup;
     editMode = false;
 
@@ -73,7 +73,7 @@ export class AlunosDetailsComponent implements OnInit, OnDestroy {
 
     constructor(
         private _alunosListComponent: AlunosListComponent,
-        private _alunosService: AlunosService,
+        private _studentsService: StudentsService,
         private _formBuilder: UntypedFormBuilder,
         private _changeDetectorRef: ChangeDetectorRef,
         private _activatedRoute: ActivatedRoute,
@@ -98,9 +98,9 @@ export class AlunosDetailsComponent implements OnInit, OnDestroy {
             tags: [[]],
         });
 
-        this._alunosService.aluno$
+        this._studentsService.aluno$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((aluno: Aluno) => {
+            .subscribe((aluno: Student) => {
                 if (!aluno) return;
 
                 this.aluno = aluno;
@@ -127,8 +127,8 @@ export class AlunosDetailsComponent implements OnInit, OnDestroy {
     updateAluno(): void {
         const aluno = this.alunoForm.getRawValue();
     
-        this._alunosService.updateAluno(aluno.id, aluno).subscribe(() => {
-            this._alunosService.getAlunoById(aluno.id).subscribe(() => {
+        this._studentsService.updateAluno(aluno.id, aluno).subscribe(() => {
+            this._studentsService.getAlunoById(aluno.id).subscribe(() => {
                 this.toggleEditMode(false);
                 this._changeDetectorRef.markForCheck();
             });
@@ -149,7 +149,7 @@ export class AlunosDetailsComponent implements OnInit, OnDestroy {
     
     deleteAluno(): void {
         const id = this.aluno.id;
-        this._alunosService.deleteAluno(id).subscribe(() => {
+        this._studentsService.deleteAluno(id).subscribe(() => {
             this.closeDrawer().then(() => {
                 this._router.navigate(['../'], {
                     relativeTo: this._activatedRoute,

@@ -22,11 +22,11 @@ import { FuseFindByKeyPipe } from '@fuse/pipes/find-by-key/find-by-key.pipe';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { TurmasService } from 'app/modules/admin/apps/turmas/turmas.service';
 import { Turma } from 'app/modules/admin/apps/shared/turmas.types';
-import { Aluno } from 'app/modules/admin/apps/shared/alunos.types';
+import { Student } from 'app/modules/admin/apps/shared/students.types';
 import { Subject, takeUntil } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { AlunosService } from '../../alunos/alunos.service';
+import { StudentsService } from '../../students/students.service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
@@ -62,8 +62,8 @@ export class TurmasDetailsComponent implements OnInit, OnDestroy {
     addStudentError: string = '';
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     studentCounts: Map<number, number> = new Map();
-    students: Aluno[] = [];
-    filteredStudents: Aluno[] = [];
+    students: Student[] = [];
+    filteredStudents: Student[] = [];
     selectedStudentId: number | null = null;
     selectedStudentName: string = '';
     isAddingStudent = false;
@@ -71,7 +71,7 @@ export class TurmasDetailsComponent implements OnInit, OnDestroy {
     constructor(
         @Inject(DOCUMENT) private _document: Document,
         private _turmasService: TurmasService,
-        private _alunosService: AlunosService,
+        private _studentsService: StudentsService,
         private _changeDetectorRef: ChangeDetectorRef,
         private _elementRef: ElementRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
@@ -128,7 +128,7 @@ export class TurmasDetailsComponent implements OnInit, OnDestroy {
     }
 
     loadAllStudents(): void {
-        this._alunosService.getAllStudents().subscribe((students) => {
+        this._studentsService.getAllStudents().subscribe((students) => {
             this.students = students;
         });
     }
@@ -139,7 +139,7 @@ export class TurmasDetailsComponent implements OnInit, OnDestroy {
             return;
         }
     
-        this._alunosService.getAllStudents().subscribe({
+        this._studentsService.getAllStudents().subscribe({
             next: (students) => {
                 this.filteredStudents = students.filter(s =>
                     s.name.toLowerCase().includes(query.toLowerCase()) ||

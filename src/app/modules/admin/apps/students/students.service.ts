@@ -3,13 +3,14 @@ import { inject, Injectable } from '@angular/core';
 import { BaseHttpService } from 'app/core/base/base-http.service';
 import { BehaviorSubject, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Aluno } from '../shared/alunos.types';
+import { Student } from '../shared/students.types';
 import { Country, Tag } from '../turmas/turma.types';
 
 @Injectable({ providedIn: 'root' })
-export class AlunosService extends BaseHttpService {
-    private _aluno: BehaviorSubject<Aluno | null> = new BehaviorSubject(null);
-    private _alunos: BehaviorSubject<Aluno[] | null> = new BehaviorSubject(null);
+export class StudentsService extends BaseHttpService {
+
+    private _aluno: BehaviorSubject<Student | null> = new BehaviorSubject(null);
+    private _alunos: BehaviorSubject<Student[] | null> = new BehaviorSubject(null);
     private _countries: BehaviorSubject<Country[] | null> = new BehaviorSubject(null);
     private _tags: BehaviorSubject<Tag[] | null> = new BehaviorSubject(null);
     private _httpClient = inject(HttpClient);
@@ -18,16 +19,16 @@ export class AlunosService extends BaseHttpService {
         super(http);
     }
 
-    get aluno$(): Observable<Aluno> {
+    get aluno$(): Observable<Student> {
         return this._aluno.asObservable();
     }
 
-    get alunos$(): Observable<Aluno[]> {
+    get alunos$(): Observable<Student[]> {
         return this._alunos.asObservable();
     }
 
-    getAllStudents(): Observable<Aluno[]> {
-        return this._httpClient.get<Aluno[]>(`${this.apiUrl}/student`).pipe(
+    getAllStudents(): Observable<Student[]> {
+        return this._httpClient.get<Student[]>(`${this.apiUrl}/student`).pipe(
             tap(alunos => this._alunos.next(alunos)),
             catchError(error => {
                 console.error('Erro ao buscar alunos:', error);
@@ -36,8 +37,8 @@ export class AlunosService extends BaseHttpService {
         );
     }
 
-    getAllStudentsWithClass(): Observable<Aluno[]> {
-        return this._httpClient.get<Aluno[]>(`${this.apiUrl}/student/GetAllStudentsWithClass`).pipe(
+    getAllStudentsWithClass(): Observable<Student[]> {
+        return this._httpClient.get<Student[]>(`${this.apiUrl}/student/GetAllStudentsWithClass`).pipe(
             tap(alunos => this._alunos.next(alunos)), 
             catchError(error => {
                 console.error('Erro ao buscar alunos com turma:', error);
@@ -46,18 +47,18 @@ export class AlunosService extends BaseHttpService {
         );
     }
 
-    getAlunoById(id: number): Observable<Aluno> {
-        return this._httpClient.get<Aluno>(`${this.apiUrl}/student/${id}`).pipe(
+    getAlunoById(id: number): Observable<Student> {
+        return this._httpClient.get<Student>(`${this.apiUrl}/student/${id}`).pipe(
             tap(aluno => this._aluno.next(aluno)),
             catchError(error => {
                 console.error(`Erro ao buscar aluno com id ${id}:`, error);
-                return throwError(() => new Error(`Aluno não encontrado com id: ${id}`));
+                return throwError(() => new Error(`Student não encontrado com id: ${id}`));
             })
         );
     }
 
-    getStudentsByClassId(classId: number): Observable<Aluno[]> {
-        return this._httpClient.get<Aluno[]>(`${this.apiUrl}/student/buscarAlunoPorTurma/${classId}`).pipe(
+    getStudentsByClassId(classId: number): Observable<Student[]> {
+        return this._httpClient.get<Student[]>(`${this.apiUrl}/student/buscarAlunoPorTurma/${classId}`).pipe(
             catchError(error => {
                 console.error(`Erro ao buscar alunos da turma ${classId}:`, error);
                 return throwError(() => new Error('Erro ao buscar alunos da turma'));
@@ -65,8 +66,8 @@ export class AlunosService extends BaseHttpService {
         );
     }
 
-    createAluno(aluno: Aluno): Observable<Aluno> {
-        return this._httpClient.post<Aluno>(`${this.apiUrl}/student`, aluno).pipe(
+    createAluno(aluno: Student): Observable<Student> {
+        return this._httpClient.post<Student>(`${this.apiUrl}/student`, aluno).pipe(
             tap(() => this.getAllStudents().subscribe()), // Atualiza lista após criação
             catchError(error => {
                 console.error('Erro ao criar aluno:', error);
@@ -75,7 +76,7 @@ export class AlunosService extends BaseHttpService {
         );
     }
 
-    updateAluno(id: number, aluno: Aluno): Observable<void> {
+    updateAluno(id: number, aluno: Student): Observable<void> {
         return this._httpClient.put<void>(`${this.apiUrl}/student/${id}`, aluno).pipe(
             tap(() => this.getAllStudents().subscribe()), // Atualiza lista após edição
             catchError(error => {
@@ -95,8 +96,8 @@ export class AlunosService extends BaseHttpService {
         );
     }
 
-    searchAlunos(query: string): Observable<Aluno[]> {
-        return this._httpClient.get<Aluno[]>(`${this.apiUrl}/student`, { params: { query } }).pipe(
+    searchAlunos(query: string): Observable<Student[]> {
+        return this._httpClient.get<Student[]>(`${this.apiUrl}/student`, { params: { query } }).pipe(
             tap(alunos => this._alunos.next(alunos)),
             catchError(error => {
                 console.error('Erro ao buscar alunos com query:', error);
@@ -105,7 +106,7 @@ export class AlunosService extends BaseHttpService {
         );
     }
 
-    setAlunos(alunos: Aluno[]): void {
+    setAlunos(alunos: Student[]): void {
         this._alunos.next(alunos);
     }
 }

@@ -1,4 +1,4 @@
-import { Aluno } from "./alunos.types";
+import { Student } from "./students.types";
 
 export interface Turma {
     id?: number;
@@ -6,7 +6,7 @@ export interface Turma {
     shift?: Shift;
     suffix?: string;
     educationLevel?: EducationLevel;
-    students?: Aluno[];
+    students?: Student[];
     teachers_Class?: ProfessorTurma[];
 }
 
