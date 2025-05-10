@@ -77,7 +77,7 @@ export class AuthSignUpComponent implements OnInit {
     signUp(): void {
         const userData: Student = this.signUpForm.value;
 
-        if (userData.roleId === 1) {
+        if (userData.roleId === 3) {
             this._authService.signUpStudent(userData).subscribe(
                 () => this._router.navigateByUrl('/confirmation-required'),
                 (err) => {
