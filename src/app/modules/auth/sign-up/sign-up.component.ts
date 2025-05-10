@@ -59,9 +59,14 @@ export class AuthSignUpComponent implements OnInit {
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required],
             document: ['', Validators.required],
+            phone: ['', Validators.required],
+            address: ['', Validators.required],
+            bornDate: ['', Validators.required],
             agreements: ['', Validators.requiredTrue],
             role: ['', Validators.required],
+            avatar: [''], // opcional por enquanto
         });
+
     }
 
     selectUserType(type: 'student' | 'teacher'): void {
@@ -70,26 +75,33 @@ export class AuthSignUpComponent implements OnInit {
 
 
     signUp(): void {
-        if (this.signUpForm.invalid) {
-            return;
+        const userData = this.signUpForm.value;
+
+        if (userData.role === 'student') {
+            this._authService.signUpStudent(userData).subscribe(
+                () => this._router.navigateByUrl('/confirmation-required'),
+                (err) => {
+                    this.alert = {
+                        type: 'error',
+                        message: err || 'Erro ao cadastrar aluno.',
+                    };
+                    this.showAlert = true;
+                }
+            );
         }
-
-        this.signUpForm.disable();
-        this.showAlert = false;
-
-        this._authService.signUp(this.signUpForm.value).subscribe(
-            (response) => {
-                this._router.navigateByUrl('/confirmation-required');
-            },
-            (response) => {
-                this.signUpForm.enable();
-                this.signUpNgForm.resetForm();
-                this.alert = {
-                    type: 'error',
-                    message: 'Something went wrong, please try again.',
-                };
-                this.showAlert = true;
-            }
-        );
+        else if (userData.role === 'teacher') {
+            // Você precisa implementar signUpTeacher no AuthService se ainda não tiver
+            this._authService.signUpTeacher(userData).subscribe(
+                () => this._router.navigateByUrl('/confirmation-required'),
+                (err) => {
+                    this.alert = {
+                        type: 'error',
+                        message: err || 'Erro ao cadastrar professor.',
+                    };
+                    this.showAlert = true;
+                }
+            );
+        }
     }
+
 }

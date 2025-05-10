@@ -49,6 +49,30 @@
                     }
                 </mat-form-field>
 
+                <mat-form-field class="w-full">
+                    <mat-label>Telefone</mat-label>
+                    <input id="phone" matInput [formControlName]="'phone'" />
+                    @if (signUpForm.get('phone').hasError('required')) {
+                    <mat-error> O telefone é obrigatório </mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field class="w-full">
+                    <mat-label>Endereço</mat-label>
+                    <input id="address" matInput [formControlName]="'address'" />
+                    @if (signUpForm.get('address').hasError('required')) {
+                    <mat-error> O endereço é obrigatório </mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field class="w-full">
+                    <mat-label>Data de nascimento</mat-label>
+                    <input id="bornDate" matInput type="date" [formControlName]="'bornDate'" />
+                    @if (signUpForm.get('bornDate').hasError('required')) {
+                    <mat-error> A data de nascimento é obrigatória </mat-error>
+                    }
+                </mat-form-field>
+
                 <!-- Campo de Email -->
                 <mat-form-field class="w-full">
                     <mat-label>Endereço de e-mail</mat-label>
@@ -60,6 +84,15 @@
                     <mat-error>
                         Por favor, insira um endereço de e-mail válido
                     </mat-error>
+                    }
+                </mat-form-field>
+
+                <!-- Campo de Documento -->
+                <mat-form-field class="w-full">
+                    <mat-label>Documento</mat-label>
+                    <input id="document" matInput [formControlName]="'document'" />
+                    @if (signUpForm.get('document').hasError('required')) {
+                    <mat-error> O documento é obrigatório </mat-error>
                     }
                 </mat-form-field>
 
@@ -82,32 +115,12 @@
                     <mat-error> A senha é obrigatória </mat-error>
                 </mat-form-field>
 
-                <!-- Campo de Documento -->
-                <mat-form-field class="w-full">
-                    <mat-label>Documento</mat-label>
-                    <input id="document" matInput [formControlName]="'document'" />
-                    @if (signUpForm.get('document').hasError('required')) {
-                    <mat-error> O documento é obrigatório </mat-error>
-                    }
-                </mat-form-field>
-
-                <!-- Termos e Política de Privacidade -->
-                <div class="mt-1.5 inline-flex w-full items-end">
-                    <mat-checkbox class="-ml-2" [color]="'primary'" [formControlName]="'agreements'">
-                        <span>Eu concordo com os</span>
-                        <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['./']">Termos
-                        </a>
-                        <span>e a</span>
-                        <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['./']">Política de Privacidade
-                        </a>
-                    </mat-checkbox>
-                </div>
 
                 <!-- Botão de Envio -->
                 <button class="fuse-mat-button-large mt-6 w-full" mat-flat-button [color]="'primary'"
                     [disabled]="signUpForm.disabled" (click)="signUp()">
                     @if (!signUpForm.disabled) {
-                    <span> Crie sua conta gratuita </span>
+                    <span> Criar conta </span>
                     }
                     @if (signUpForm.disabled) {
                     <mat-progress-spinner [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
