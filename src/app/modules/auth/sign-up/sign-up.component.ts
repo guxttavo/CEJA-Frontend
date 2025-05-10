@@ -88,7 +88,7 @@ export class AuthSignUpComponent implements OnInit {
                     this.showAlert = true;
                 }
             );
-        } else if (userData.roleId === 4) {
+        } else if (userData.roleId === 2) {
             this._authService.signUpTeacher(userData).subscribe(
                 () => this._router.navigateByUrl('/confirmation-required'),
                 (err) => {
