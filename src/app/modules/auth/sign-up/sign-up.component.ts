@@ -17,6 +17,7 @@ import { Router, RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
+import { Student } from 'app/modules/admin/apps/shared/student.types';
 
 @Component({
     selector: 'auth-sign-up',
@@ -62,22 +63,21 @@ export class AuthSignUpComponent implements OnInit {
             phone: ['', Validators.required],
             address: ['', Validators.required],
             bornDate: ['', Validators.required],
-            agreements: ['', Validators.requiredTrue],
-            role: ['', Validators.required],
-            avatar: [''], // opcional por enquanto
+            roleId: [null, Validators.required],
+            avatar: [''],
         });
 
     }
 
     selectUserType(type: 'student' | 'teacher'): void {
-        this.signUpForm.get('role')?.setValue(type);
+        const roleId = type === 'student' ? 1 : 4;
+        this.signUpForm.get('roleId')?.setValue(roleId);
     }
 
-
     signUp(): void {
-        const userData = this.signUpForm.value;
+        const userData: Student = this.signUpForm.value;
 
-        if (userData.role === 'student') {
+        if (userData.roleId === 1) {
             this._authService.signUpStudent(userData).subscribe(
                 () => this._router.navigateByUrl('/confirmation-required'),
                 (err) => {
@@ -88,9 +88,7 @@ export class AuthSignUpComponent implements OnInit {
                     this.showAlert = true;
                 }
             );
-        }
-        else if (userData.role === 'teacher') {
-            // Você precisa implementar signUpTeacher no AuthService se ainda não tiver
+        } else if (userData.roleId === 4) {
             this._authService.signUpTeacher(userData).subscribe(
                 () => this._router.navigateByUrl('/confirmation-required'),
                 (err) => {

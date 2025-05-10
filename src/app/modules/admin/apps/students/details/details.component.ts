@@ -30,7 +30,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject, takeUntil } from 'rxjs';
 
 import { StudentsService } from '../students.service';
-import { Student } from '../../shared/students.types';
+import { Student } from '../../shared/student.types';
 import { AlunosListComponent } from '../list/list.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';

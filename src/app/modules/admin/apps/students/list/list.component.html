@@ -46,10 +46,10 @@
                             </mat-form-field>
                         </div>
                         <!-- Add aluno button -->
-                        <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createAluno()">
+                        <!-- <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createAluno()">
                             <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
                             <span class="ml-2 mr-1">Adicionar</span>
-                        </button>
+                        </button> -->
                     </div>
                 </div>
 
@@ -58,10 +58,10 @@
 
                     <!-- Dropdown principal -->
                     <mat-form-field class="fuse-mat-rounded w-full sm:w-36" subscriptSizing="dynamic">
-                        <mat-select [(value)]="selectedFilter" (selectionChange)="onFilterChange($event.value)">
+                        <!-- <mat-select [(value)]="selectedFilter" (selectionChange)="onFilterChange($event.value)">
                             <mat-option value="all">Todos</mat-option>
                             <mat-option value="turma">Turma</mat-option>
-                        </mat-select>
+                        </mat-select> -->
                     </mat-form-field>
 
                     <!-- Dropdown secundário: visível apenas se "turma" for selecionado -->

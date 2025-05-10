@@ -24,7 +24,7 @@ import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { StudentsService } from 'app/modules/admin/apps/students/students.service';
-import { Student } from 'app/modules/admin/apps/shared/students.types';
+import { Student } from 'app/modules/admin/apps/shared/student.types';
 import { Observable, Subject, filter, fromEvent, takeUntil } from 'rxjs';
 import { TurmaService } from '../../turmas/turma.service';
 import { Turma } from '../../turmas/turma.types';
@@ -111,16 +111,16 @@ export class AlunosListComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             });
 
-        fromEvent(this._document, 'keydown')
-            .pipe(
-                takeUntil(this._unsubscribeAll),
-                filter<KeyboardEvent>(
-                    (event) => (event.ctrlKey === true || event.metaKey) && event.key === '/'
-                )
-            )
-            .subscribe(() => {
-                this.createAluno();
-            });
+        // fromEvent(this._document, 'keydown')
+        //     .pipe(
+        //         takeUntil(this._unsubscribeAll),
+        //         filter<KeyboardEvent>(
+        //             (event) => (event.ctrlKey === true || event.metaKey) && event.key === '/'
+        //         )
+        //     )
+        //     .subscribe(() => {
+        //         this.createAluno();
+        //     });
 
         this.searchInputControl.valueChanges
             .pipe(takeUntil(this._unsubscribeAll))
@@ -137,81 +137,81 @@ export class AlunosListComponent implements OnInit, OnDestroy {
             });
     }
 
-    createAluno(): void {
-        const newAluno: Student = {
-            id: 0,
-            name: 'Novo Aluno',
-            email: '',
-            phone: '',
-            document: '',
-            password: '',
-            bornDate: new Date().toISOString(),
-            registrationNumber: 0
-        };
+    // createAluno(): void {
+    //     const newAluno: Student = {
+    //         id: 0,
+    //         name: 'Novo Aluno',
+    //         email: '',
+    //         phone: '',
+    //         document: '',
+    //         password: '',
+    //         bornDate: new Date().toISOString(),
+    //         RegistrationNumber: 0
+    //     };
 
-        this._studentsService.createAluno(newAluno).subscribe((created) => {
-            this._router.navigate(['./', created.id], { relativeTo: this._activatedRoute });
-            this._changeDetectorRef.markForCheck();
-        });
-    }
+    //     this._studentsService.createAluno(newAluno).subscribe((created) => {
+    //         this._router.navigate(['./', created.id], { relativeTo: this._activatedRoute });
+    //         this._changeDetectorRef.markForCheck();
+    //     });
+    // }
 
-    onFilterChange(value: 'all' | 'turma'): void {
-        if (value === 'all') {
-            this._studentsService.getAllStudents().subscribe((alunos) => {
-                this.allAlunos = alunos;
-                this._studentsService.setAlunos(alunos);
-            });
-        }
+    // onFilterChange(value: 'all' | 'turma'): void {
+    //     if (value === 'all') {
+    //         this._studentsService.getAllStudents().subscribe((alunos) => {
+    //             this.allAlunos = alunos;
+    //             this._studentsService.setAlunos(alunos);
+    //         });
+    //     }
 
-        if (value === 'turma') {
-            this._studentsService.getAllStudentsWithClass().subscribe((alunosComTurma) => {
-                this.allAlunos = alunosComTurma;
-                this._studentsService.setAlunos(alunosComTurma);
-                this.getYearFromStudent(alunosComTurma);
-            });
-        }
-    }
+    //     if (value === 'turma') {
+    //         this._studentsService.getAllStudentsWithClass().subscribe((alunosComTurma) => {
+    //             this.allAlunos = alunosComTurma;
+    //             this._studentsService.setAlunos(alunosComTurma);
+    //             this.getYearFromStudent(alunosComTurma);
+    //         });
+    //     }
+    // }
 
-    onTurmaFilterChange(): void {
-        if (this.selectedTurmaFilter === 'year' && this.alunos?.length) {
-            this.getYearFromStudent(this.alunos);
-        }
+    // onTurmaFilterChange(): void {
+    //     if (this.selectedTurmaFilter === 'year' && this.alunos?.length) {
+    //         this.getYearFromStudent(this.alunos);
+    //     }
 
-        if (this.selectedTurmaFilter === 'suffix') {
-            this.getSuffixFromStudent(this.alunos);
-            this.selectedTurmaSuffix = null;
-        }
-    }
+    //     if (this.selectedTurmaFilter === 'suffix') {
+    //         this.getSuffixFromStudent(this.alunos);
+    //         this.selectedTurmaSuffix = null;
+    //     }
+    // }
 
-    getYearFromStudent(alunos: Student[]): void {
-        const anos = alunos.map(a => a.class?.year).filter(Boolean);
-        this.anosDisponiveis = [...new Set(anos)].sort((a, b) => a - b);
-    }
+    // getYearFromStudent(alunos: Student[]): void {
+    //     const anos = alunos.map(a => a.class?.year).filter(Boolean);
+    //     this.anosDisponiveis = [...new Set(anos)].sort((a, b) => a - b);
+    // }
 
-    getSuffixFromStudent(alunos: Student[]): void {
-        const sufixos = alunos.map(a => a.class?.suffix).filter(Boolean);
-        this.sufixosDisponiveis = [...new Set(sufixos)].sort();
-    }
+    // getSuffixFromStudent(alunos: Student[]): void {
+    //     const sufixos = alunos.map(a => a.class?.suffix).filter(Boolean);
+    //     this.sufixosDisponiveis = [...new Set(sufixos)].sort();
+    // }
 
-    onTurmaYearSelected(year: number): void {
-        const alunosFiltrados = this.allAlunos.filter(a => a.class?.year === year);
-        this._studentsService.setAlunos(alunosFiltrados);
-        this._changeDetectorRef.markForCheck();
-    }
+    // onTurmaYearSelected(year: number): void {
+    //     const alunosFiltrados = this.allAlunos.filter(a => a.class?.year === year);
+    //     this._studentsService.setAlunos(alunosFiltrados);
+    //     this._changeDetectorRef.markForCheck();
+    // }
 
-    onTurmaShiftSelected(shiftSelecionado: number): void {
-        if (!shiftSelecionado) return;
-        const alunosFiltrados = this.allAlunos.filter(a => a.class?.shift === shiftSelecionado);
-        this._studentsService.setAlunos(alunosFiltrados);
-        this._changeDetectorRef.markForCheck();
-    }
+    // onTurmaShiftSelected(shiftSelecionado: number): void {
+    //     if (!shiftSelecionado) return;
+    //     const alunosFiltrados = this.allAlunos.filter(a => a.class?.shift === shiftSelecionado);
+    //     this._studentsService.setAlunos(alunosFiltrados);
+    //     this._changeDetectorRef.markForCheck();
+    // }
 
-    onTurmaSuffixSelected(suffixSelecionado: string): void {
-        if (!suffixSelecionado) return;
-        const alunosFiltrados = this.allAlunos.filter(a => a.class?.suffix === suffixSelecionado);
-        this._studentsService.setAlunos(alunosFiltrados);
-        this._changeDetectorRef.markForCheck();
-    }
+    // onTurmaSuffixSelected(suffixSelecionado: string): void {
+    //     if (!suffixSelecionado) return;
+    //     const alunosFiltrados = this.allAlunos.filter(a => a.class?.suffix === suffixSelecionado);
+    //     this._studentsService.setAlunos(alunosFiltrados);
+    //     this._changeDetectorRef.markForCheck();
+    // }
 
     onBackdropClicked(): void {
         this._router.navigate(['./'], { relativeTo: this._activatedRoute });

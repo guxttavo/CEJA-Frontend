@@ -27,12 +27,12 @@
             <!-- Seleção de tipo de usuário -->
             <div class="flex justify-center gap-4 mt-4">
                 <button type="button" class="fuse-mat-button" mat-stroked-button
-                    [color]="signUpForm.get('role').value === 'student' ? 'primary' : undefined"
+                    [color]="signUpForm.get('roleId').value === 1 ? 'primary' : undefined"
                     (click)="selectUserType('student')">
                     Sou Aluno
                 </button>
                 <button type="button" class="fuse-mat-button" mat-stroked-button
-                    [color]="signUpForm.get('role').value === 'teacher' ? 'primary' : undefined"
+                    [color]="signUpForm.get('roleId').value === 4 ? 'primary' : undefined"
                     (click)="selectUserType('teacher')">
                     Sou Professor
                 </button>

@@ -1,4 +1,4 @@
-import { Student } from "./students.types";
+import { Student } from "./student.types";
 
 export interface Turma {
     id?: number;

@@ -6,7 +6,7 @@ import {
 import { RouterOutlet } from '@angular/router';
 import { Observable } from 'rxjs';
 import { StudentsService } from './students.service';
-import { Student } from 'app/modules/admin/apps/shared/students.types';
+import { Student } from 'app/modules/admin/apps/shared/student.types';
 
 @Component({
     selector: 'alunos',

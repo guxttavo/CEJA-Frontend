@@ -4,7 +4,7 @@ import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { BaseHttpService } from '../base/base-http.service';
-import { Student } from 'app/modules/admin/apps/shared/students.types';
+import { Student } from 'app/modules/admin/apps/shared/student.types';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends BaseHttpService {
