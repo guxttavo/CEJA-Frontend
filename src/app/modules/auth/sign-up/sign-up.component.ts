@@ -51,7 +51,7 @@ export class AuthSignUpComponent implements OnInit {
         private _authService: AuthService,
         private _formBuilder: UntypedFormBuilder,
         private _router: Router
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.signUpForm = this._formBuilder.group({
@@ -60,8 +60,14 @@ export class AuthSignUpComponent implements OnInit {
             password: ['', Validators.required],
             document: ['', Validators.required],
             agreements: ['', Validators.requiredTrue],
+            role: ['', Validators.required],
         });
     }
+
+    selectUserType(type: 'student' | 'teacher'): void {
+        this.signUpForm.get('role')?.setValue(type);
+    }
+
 
     signUp(): void {
         if (this.signUpForm.invalid) {
