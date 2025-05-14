@@ -70,7 +70,7 @@ export class AuthSignUpComponent implements OnInit {
     }
 
     selectUserType(type: 'student' | 'teacher'): void {
-        const roleId = type === 'student' ? 1 : 4;
+        const roleId = type === 'student' ? 3 : 2;
         this.signUpForm.get('roleId')?.setValue(roleId);
     }
 

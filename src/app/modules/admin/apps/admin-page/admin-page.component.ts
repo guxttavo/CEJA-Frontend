@@ -4,6 +4,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AproveTeachersComponent } from "./aprove-teachers/aprove-teachers.component";
 
 @Component({
     selector: 'turmas',
@@ -11,7 +12,7 @@ import { RouterOutlet } from '@angular/router';
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
-    imports: [RouterOutlet],
+    imports: [RouterOutlet, AproveTeachersComponent],
 })
 export class AdminPageComponent {
     constructor() {}
