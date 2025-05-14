@@ -9,6 +9,21 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon: 'heroicons_outline:home',
         children: [
             {
+                id: 'admin.adminpage',
+                title: 'Gerenciamento do Sistema',
+                type: 'collapsable',
+                icon: 'heroicons_outline:user-group',
+                children: [
+                    {
+                        id: 'navigation-features.level.0.1-1-with-subtitle',
+                        title: 'Aprovação de Professores',
+                        type: 'basic',
+                        link: '/admin/teacher',
+                    }
+                ],
+            },
+
+            {
                 id: 'admin.turmas',
                 title: 'Turmas',
                 type: 'basic',
@@ -21,13 +36,6 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'basic',
                 icon: 'heroicons_outline:user-group',
                 link: '/admin/alunos',
-            },
-            {
-                id: 'admin.adminpage',
-                title: 'Gerenciamento do Sistema',
-                type: 'basic',
-                icon: 'heroicons_outline:user-group',
-                link: '/admin/teacher',
             }
         ]
     },
