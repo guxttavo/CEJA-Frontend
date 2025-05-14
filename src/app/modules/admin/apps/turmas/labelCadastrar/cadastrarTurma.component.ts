@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { Turma } from '../turma.types';
+import { Turma } from '../../shared/turma.types';
 import { TurmaService } from '../turma.service';
 import { NgIf, NgClass } from '@angular/common';
 

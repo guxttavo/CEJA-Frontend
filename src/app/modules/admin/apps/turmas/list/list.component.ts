@@ -24,10 +24,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FuseFindByKeyPipe } from '@fuse/pipes/find-by-key/find-by-key.pipe';
 import { TurmasService } from 'app/modules/admin/apps/turmas/turmas.service';
-import { Turma } from 'app/modules/admin/apps/shared/turmas.types';
 import { BehaviorSubject, Subject, combineLatest, takeUntil } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { CadastrarTurmaComponent } from '../labelCadastrar/cadastrarTurma.component';
+import { Turma } from '../../shared/turma.types';
 
 @Component({
     selector: 'turmas-list',

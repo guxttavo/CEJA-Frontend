@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BaseHttpService } from 'app/core/base/base-http.service';
-import { Turma, EducationLevel, Shift } from 'app/modules/admin/apps/shared/turmas.types';
 import { BehaviorSubject, Observable, map, of, switchMap, tap, throwError } from 'rxjs';
+import { EducationLevel, Shift, Turma } from '../shared/turma.types';
 
 @Injectable({ providedIn: 'root' })
 export class TurmasService extends BaseHttpService {
@@ -81,5 +81,4 @@ export class TurmasService extends BaseHttpService {
     getTeacherCountByClassId(id: number): Observable<number> {
         return this._httpClient.get<number>(`${this.apiUrl}/class/${id}/teachers/count`);
     }
-    
 }

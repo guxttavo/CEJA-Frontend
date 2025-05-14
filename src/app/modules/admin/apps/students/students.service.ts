@@ -4,7 +4,7 @@ import { BaseHttpService } from 'app/core/base/base-http.service';
 import { BehaviorSubject, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Student } from '../shared/student.types';
-import { Country, Tag } from '../turmas/turma.types';
+import { Country, Tag } from '../shared/turma.types';
 
 @Injectable({ providedIn: 'root' })
 export class StudentsService extends BaseHttpService {

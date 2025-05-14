@@ -21,13 +21,13 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FuseFindByKeyPipe } from '@fuse/pipes/find-by-key/find-by-key.pipe';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { TurmasService } from 'app/modules/admin/apps/turmas/turmas.service';
-import { Turma } from 'app/modules/admin/apps/shared/turmas.types';
 import { Student } from 'app/modules/admin/apps/shared/student.types';
 import { Subject, takeUntil } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { StudentsService } from '../../students/students.service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { Turma } from '../../shared/turma.types';
 
 @Component({
     selector: 'turmas-details',

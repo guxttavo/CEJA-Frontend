@@ -30,7 +30,7 @@ import { TurmaService } from 'app/modules/admin/apps/turmas/turma.service';
 import {
     Country,
     Turma,
-} from 'app/modules/admin/apps/turmas/turma.types';
+} from 'app/modules/admin/apps/shared/turma.types';
 import {
     filter,
     fromEvent,

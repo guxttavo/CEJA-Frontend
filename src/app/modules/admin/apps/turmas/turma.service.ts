@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Turma } from 'app/modules/admin/apps/turmas/turma.types';
+import { Turma } from 'app/modules/admin/apps/shared/turma.types';
 import { BehaviorSubject, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 

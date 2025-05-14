@@ -11,12 +11,6 @@ import { AlunosDetailsComponent } from 'app/modules/admin/apps/students/details/
 import { AlunosListComponent } from 'app/modules/admin/apps/students/list/list.component';
 import { catchError, throwError } from 'rxjs';
 
-/**
- * Aluno resolver
- *
- * @param route
- * @param state
- */
 const alunoResolver = (
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { FuseNavigationItem } from '@fuse/components/navigation';
 
 export const defaultNavigation: FuseNavigationItem[] = [
@@ -22,6 +21,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'basic',
                 icon: 'heroicons_outline:user-group',
                 link: '/admin/alunos',
+            },
+            {
+                id: 'admin.adminpage',
+                title: 'Gerenciamento do Sistema',
+                type: 'basic',
+                icon: 'heroicons_outline:user-group',
+                link: '/admin/teacher',
             }
         ]
     },

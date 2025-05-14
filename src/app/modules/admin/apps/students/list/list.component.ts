@@ -27,7 +27,7 @@ import { StudentsService } from 'app/modules/admin/apps/students/students.servic
 import { Student } from 'app/modules/admin/apps/shared/student.types';
 import { Observable, Subject, filter, fromEvent, takeUntil } from 'rxjs';
 import { TurmaService } from '../../turmas/turma.service';
-import { Turma } from '../../turmas/turma.types';
+import { Turma } from '../../shared/turma.types';
 
 @Component({
     selector: 'alunos-list',
