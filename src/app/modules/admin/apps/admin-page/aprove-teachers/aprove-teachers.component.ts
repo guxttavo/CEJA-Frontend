@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Teacher } from '../../shared/teacher.types';
 import { TeacherService } from '../../teachers/teacher.service';
 import { MatTableDataSource } from '@angular/material/table';
+import iziToast from 'izitoast';
 
 @Component({
   selector: 'app-aprove-teachers',
@@ -46,20 +47,34 @@ export class AproveTeachersComponent implements OnInit {
   }
 
   approveTeacher(teacher: Teacher): void {
+    if (teacher.roleId === 2) {
+      iziToast.error({
+        title: 'Erro',
+        message: 'Professor já aprovado para utilizar o sistema',
+        position: 'topRight'
+      });
+      return; // impede a chamada da API
+    }
+
     this._teacherService.approveTeacher(teacher.id).subscribe({
       next: () => {
-        teacher.roleId = 2; // Atualiza visualmente o status para "Aprovado"
+        iziToast.success({
+          title: 'Sucesso',
+          message: 'Professor aprovado para utilizar o sistema',
+          position: 'topRight'
+        });
+
+        this.loadTeachers(); // recarrega a tabela
       },
       error: (err) => {
         console.error('Erro ao aprovar professor:', err);
+        iziToast.error({
+          title: 'Erro',
+          message: 'Não foi possível aprovar o professor',
+          position: 'topRight'
+        });
       }
     });
-  }
-
-  rejectTeacher(teacher: Teacher): void {
-    console.log('Reprovando:', teacher);
-    // Aqui você pode chamar um serviço para reprovar o professor
-    // this._teacherService.rejectTeacher(teacher.id).subscribe(...)
   }
 
   getRoleLabel(roleId: number): string {

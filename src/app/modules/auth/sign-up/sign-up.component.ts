@@ -70,7 +70,7 @@ export class AuthSignUpComponent implements OnInit {
     }
 
     selectUserType(type: 'student' | 'teacher'): void {
-        const roleId = type === 'student' ? 3 : 2;
+        const roleId = type === 'student' ? 3 : 4;
         this.signUpForm.get('roleId')?.setValue(roleId);
     }
 
@@ -88,7 +88,7 @@ export class AuthSignUpComponent implements OnInit {
                     this.showAlert = true;
                 }
             );
-        } else if (userData.roleId === 2) {
+        } else if (userData.roleId === 4) {
             this._authService.signUpTeacher(userData).subscribe(
                 () => this._router.navigateByUrl('/confirmation-required'),
                 (err) => {
