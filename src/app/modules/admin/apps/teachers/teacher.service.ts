@@ -23,4 +23,15 @@ export class TeacherService extends BaseHttpService {
             })
         );
     }
+
+    approveTeacher(teacherId: number): Observable<void> {
+    return this._httpClient.put<void>(`${this.apiUrl}/teacher/AproveTeacher/${teacherId}`, {}).pipe(
+        tap(() => console.log(`Professor ${teacherId} aprovado com sucesso.`)),
+        catchError((error) => {
+            console.error('Erro ao aprovar professor:', error);
+            return throwError(() => error);
+        })
+    );
+}
+
 }

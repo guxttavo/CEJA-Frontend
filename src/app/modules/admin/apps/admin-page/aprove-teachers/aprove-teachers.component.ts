@@ -25,7 +25,7 @@ import { MatTableDataSource } from '@angular/material/table';
   templateUrl: './aprove-teachers.component.html'
 })
 export class AproveTeachersComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'email', 'status'];
+  displayedColumns: string[] = ['name', 'document', 'phone', 'address', 'roleId', 'actions'];
   teachers = new MatTableDataSource<Teacher>();
 
   constructor(private _teacherService: TeacherService) { }
@@ -44,6 +44,36 @@ export class AproveTeachersComponent implements OnInit {
       }
     });
   }
+
+  approveTeacher(teacher: Teacher): void {
+    this._teacherService.approveTeacher(teacher.id).subscribe({
+      next: () => {
+        teacher.roleId = 2; // Atualiza visualmente o status para "Aprovado"
+      },
+      error: (err) => {
+        console.error('Erro ao aprovar professor:', err);
+      }
+    });
+  }
+
+  rejectTeacher(teacher: Teacher): void {
+    console.log('Reprovando:', teacher);
+    // Aqui você pode chamar um serviço para reprovar o professor
+    // this._teacherService.rejectTeacher(teacher.id).subscribe(...)
+  }
+
+  getRoleLabel(roleId: number): string {
+    switch (roleId) {
+      case 2:
+        return 'Aprovado';
+      case 4:
+        return 'Pendente';
+      default:
+        return 'Desconhecido';
+    }
+  }
+
+
 
   filterByQuery(query: string): void {
     console.log('Filtrando por:', query);
