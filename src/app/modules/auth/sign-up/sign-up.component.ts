@@ -38,7 +38,7 @@ import { Student } from 'app/modules/admin/apps/shared/student.types';
         MatProgressSpinnerModule,
     ],
 })
-export class AuthSignUpComponent implements OnInit {
+export class SignUpComponent implements OnInit {
     @ViewChild('signUpNgForm') signUpNgForm: NgForm;
 
     alert: { type: FuseAlertType; message: string } = {
@@ -98,7 +98,7 @@ export class AuthSignUpComponent implements OnInit {
                     this.showAlert = true;
                 }
             );
-        }
+        } 
     }
 
 }

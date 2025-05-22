@@ -6,6 +6,7 @@ import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { BaseHttpService } from '../base/base-http.service';
 import { Student } from 'app/modules/admin/apps/shared/student.types';
 import { Teacher } from 'app/modules/admin/apps/shared/teacher.types';
+import { Admin } from 'app/modules/admin/apps/shared/admin.types';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends BaseHttpService {
@@ -17,32 +18,6 @@ export class AuthService extends BaseHttpService {
     constructor(http: HttpClient) {
         super(http);
         this.rememberMe = localStorage.getItem('rememberMe') === 'true';
-    }
-
-    signUpStudent(student: Student): Observable<any> {
-        return this._httpClient.post(`${this.apiUrl}/student`, student).pipe(
-            switchMap((response: any) => of(response)),
-            catchError(() => {
-                return throwError(() => 'Falha ao cadastrar aluno. Verifique os dados.');
-            })
-        );
-    }
-
-    signUpTeacher(teacher: Teacher): Observable<any> {
-        return this._httpClient.post(`${this.apiUrl}/teacher`, teacher).pipe(
-            switchMap((response: any) => of(response)),
-            catchError(() => {
-                return throwError(() => 'Falha ao cadastrar professor. Verifique os dados.');
-            })
-        );
-    }
-
-    forgotPassword(email: string): Observable<any> {
-        return this._httpClient.post(`${this.apiUrl}/auth/forgot-password`, { email });
-    }
-
-    resetPassword(data: { email: string; token: string; newPassword: string }): Observable<any> {
-        return this._httpClient.post(`${this.apiUrl}/auth/reset-password`, data);
     }
 
     signIn(credentials: { email: string; password: string; rememberMe: boolean; roleId: number }): Observable<any> {
@@ -65,6 +40,43 @@ export class AuthService extends BaseHttpService {
         );
     }
 
+
+    signUpStudent(student: Student): Observable<any> {
+        return this._httpClient.post(`${this.apiUrl}/student`, student).pipe(
+            switchMap((response: any) => of(response)),
+            catchError(() => {
+                return throwError(() => 'Falha ao cadastrar aluno. Verifique os dados.');
+            })
+        );
+    }
+
+    signUpTeacher(teacher: Teacher): Observable<any> {
+        return this._httpClient.post(`${this.apiUrl}/teacher`, teacher).pipe(
+            switchMap((response: any) => of(response)),
+            catchError(() => {
+                return throwError(() => 'Falha ao cadastrar professor. Verifique os dados.');
+            })
+        );
+    }
+
+    signUpAdmin(user: Admin): Observable<any> {
+        return this._httpClient.post(`${this.apiUrl}/user`, user).pipe(
+            switchMap((response: any) => {
+                return of(response);
+            }),
+            catchError((error) => {
+                return throwError(() => 'Falha ao realizar cadastro. Verifique os dados fornecidos.');
+            })
+        );
+    }
+
+    forgotPassword(email: string): Observable<any> {
+        return this._httpClient.post(`${this.apiUrl}/auth/forgot-password`, { email });
+    }
+
+    resetPassword(data: { email: string; token: string; newPassword: string }): Observable<any> {
+        return this._httpClient.post(`${this.apiUrl}/auth/reset-password`, data);
+    }
 
     set accessToken(token: string) {
         if (this.rememberMe) {
@@ -108,26 +120,6 @@ export class AuthService extends BaseHttpService {
         localStorage.removeItem('rememberMe');
         this._authenticated = false;
         return of(true);
-    }
-
-    signUp(user: {
-        avatar: string;
-        name: string;
-        email: string;
-        document: string;
-        password: string;
-        phone: string;
-        address: string;
-        bornDate: string;
-    }): Observable<any> {
-        return this._httpClient.post(`${this.apiUrl}/user`, user).pipe(
-            switchMap((response: any) => {
-                return of(response);
-            }),
-            catchError((error) => {
-                return throwError(() => 'Falha ao realizar cadastro. Verifique os dados fornecidos.');
-            })
-        );
     }
 
     unlockSession(credentials: { email: string; password: string }): Observable<any> {

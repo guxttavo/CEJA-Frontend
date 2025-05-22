@@ -62,7 +62,7 @@ export class AuthSignInComponent implements OnInit {
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required],
             rememberMe: [false],
-            roleId: [null, Validators.required] // Novo campo
+            roleId: [1, Validators.required] 
         });
     }
 
@@ -77,6 +77,10 @@ export class AuthSignInComponent implements OnInit {
             return;
         }
 
+        if (!this.signInForm.get('roleId')?.value) {
+            this.signInForm.get('roleId')?.setValue(1); 
+        }
+
         const credentials = this.signInForm.value;
 
         this._authService.signIn({
@@ -86,11 +90,16 @@ export class AuthSignInComponent implements OnInit {
             roleId: credentials.roleId
         }).subscribe(
             () => {
-                // Sucesso: redireciona para o dashboard
-                this._router.navigateByUrl('/dashboard'); // ou outra rota
+                const role = credentials.roleId;
+                if (role === 3) {
+                    this._router.navigate(['/student/dashboard']);
+                } else if (role === 2) {
+                    this._router.navigate(['/teacher/dashboard']);
+                } else {
+                    this._router.navigate(['/admin/dashboard']);
+                }
             },
             (error) => {
-                // Erro: exibe mensagem
                 this.alert = {
                     type: 'error',
                     message: error || 'Erro ao realizar login.'
@@ -99,4 +108,5 @@ export class AuthSignInComponent implements OnInit {
             }
         );
     }
+
 }
