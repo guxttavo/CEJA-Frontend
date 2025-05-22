@@ -1,7 +1,31 @@
 import { FuseNavigationItem } from '@fuse/components/navigation';
+import { jwtDecode } from 'jwt-decode';
 
-export const defaultNavigation: FuseNavigationItem[] = [
-    {
+interface TokenPayload {
+    email: string;
+    roleId: string;
+    exp: number;
+}
+
+function getRoleId(): string | null {
+    try {
+        const token = localStorage.getItem('accessToken');
+        if (!token) return null;
+        const decoded = jwtDecode<TokenPayload>(token);
+        return decoded.roleId;
+    } catch (e) {
+        console.error('Erro ao decodificar o token:', e);
+        return null;
+    }
+}
+
+const roleId = getRoleId();
+
+export const defaultNavigation: FuseNavigationItem[] = [];
+
+
+if (roleId === '1') {
+    defaultNavigation.push({
         id: 'admin',
         title: 'Administração',
         subtitle: 'Gerencie seus principais recursos',
@@ -9,20 +33,24 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon: 'heroicons_outline:home',
         children: [
             {
-                id: 'admin.adminpage',
-                title: 'Gerenciamento do Sistema',
-                type: 'collapsable',
+                id: 'navigation-features.level.0.1-1-with-subtitle',
+                title: 'Aprovação de Professores',
+                type: 'basic',
                 icon: 'heroicons_outline:user-group',
-                children: [
-                    {
-                        id: 'navigation-features.level.0.1-1-with-subtitle',
-                        title: 'Aprovação de Professores',
-                        type: 'basic',
-                        link: '/admin/teacher',
-                    }
-                ],
+                link: '/admin/teacher',
             },
+        ]
+    });
+}
 
+defaultNavigation.push(
+    {
+        id: 'dashboards',
+        title: 'Dashboards',
+        subtitle: 'Unique dashboard designs',
+        type: 'group',
+        icon: 'heroicons_outline:home',
+        children: [
             {
                 id: 'admin.turmas',
                 title: 'Turmas',
@@ -36,16 +64,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'basic',
                 icon: 'heroicons_outline:user-group',
                 link: '/admin/alunos',
-            }
-        ]
-    },
-    {
-        id: 'dashboards',
-        title: 'Dashboards',
-        subtitle: 'Unique dashboard designs',
-        type: 'group',
-        icon: 'heroicons_outline:home',
-        children: [
+            },
             {
                 id: 'dashboards.project',
                 title: 'Project',
@@ -1200,8 +1219,8 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'basic',
             },
         ],
-    },
-];
+    });
+
 export const compactNavigation: FuseNavigationItem[] = [
     {
         id: 'dashboards',

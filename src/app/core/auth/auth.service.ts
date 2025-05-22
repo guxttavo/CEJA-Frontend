@@ -37,21 +37,6 @@ export class AuthService extends BaseHttpService {
         );
     }
 
-
-    set accessToken(token: string) {
-        if (this.rememberMe) {
-            localStorage.setItem('accessToken', token);
-            sessionStorage.removeItem('accessToken');
-        } else {
-            sessionStorage.setItem('accessToken', token);
-            localStorage.removeItem('accessToken');
-        }
-    }
-
-    get accessToken(): string {
-        return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken') || '';
-    }
-
     forgotPassword(email: string): Observable<any> {
         return this._httpClient.post(`${this.apiUrl}/auth/forgot-password`, { email });
     }
@@ -60,7 +45,7 @@ export class AuthService extends BaseHttpService {
         return this._httpClient.post(`${this.apiUrl}/auth/reset-password`, data);
     }
 
-    signIn(credentials: { email: string; password: string; rememberMe: boolean }): Observable<any> {
+    signIn(credentials: { email: string; password: string; rememberMe: boolean; roleId: number }): Observable<any> {
         if (this._authenticated) {
             return throwError(() => 'User is already logged in.');
         }
@@ -78,6 +63,21 @@ export class AuthService extends BaseHttpService {
                 return throwError(() => 'Falha ao realizar login. Verifique suas credenciais.');
             })
         );
+    }
+
+
+    set accessToken(token: string) {
+        if (this.rememberMe) {
+            localStorage.setItem('accessToken', token);
+            sessionStorage.removeItem('accessToken');
+        } else {
+            sessionStorage.setItem('accessToken', token);
+            localStorage.removeItem('accessToken');
+        }
+    }
+
+    get accessToken(): string {
+        return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken') || '';
     }
 
     signInUsingToken(): Observable<any> {

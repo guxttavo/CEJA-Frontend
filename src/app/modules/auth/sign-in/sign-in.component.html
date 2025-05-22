@@ -1,7 +1,5 @@
 <div class="flex min-w-0 flex-auto flex-col items-center sm:justify-center">
-    <div
-        class="w-full px-4 py-8 sm:bg-card sm:w-auto sm:rounded-2xl sm:p-12 sm:shadow"
-    >
+    <div class="w-full px-4 py-8 sm:bg-card sm:w-auto sm:rounded-2xl sm:p-12 sm:shadow">
         <div class="mx-auto w-full max-w-80 sm:mx-0 sm:w-80">
             <!-- Logo -->
             <div class="w-12">
@@ -9,119 +7,88 @@
             </div>
 
             <!-- Título -->
-            <div
-                class="mt-8 text-4xl font-extrabold leading-tight tracking-tight"
-            >
+            <div class="mt-8 text-4xl font-extrabold leading-tight tracking-tight">
                 Entrar
             </div>
             <div class="mt-0.5 flex items-baseline font-medium">
                 <div>Não tem uma conta?</div>
-                <a
-                    class="ml-1 text-primary-500 hover:underline"
-                    [routerLink]="['/sign-up']"
-                    >Cadastre-se
+                <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['/sign-up']">Cadastre-se
                 </a>
             </div>
 
             <!-- Alerta -->
             @if (showAlert) {
-                <fuse-alert
-                    class="mt-8"
-                    [appearance]="'outline'"
-                    [showIcon]="false"
-                    [type]="alert.type"
-                    [@shake]="alert.type === 'error'"
-                >
-                    {{ alert.message }}
-                </fuse-alert>
+            <fuse-alert class="mt-8" [appearance]="'outline'" [showIcon]="false" [type]="alert.type"
+                [@shake]="alert.type === 'error'">
+                {{ alert.message }}
+            </fuse-alert>
             }
-
             <!-- Formulário de login -->
             <form class="mt-8" [formGroup]="signInForm" #signInNgForm="ngForm">
+                <div class="flex justify-center gap-4 mt-4">
+                    <button type="button" class="fuse-mat-button" mat-stroked-button
+                        [color]="signInForm.get('roleId').value === 3 ? 'primary' : undefined"
+                        (click)="selectUserType('student')">
+                        Sou Aluno
+                    </button>
+                    <!-- Botão: Sou Professor -->
+                    <button type="button" class="fuse-mat-button" mat-stroked-button
+                        [color]="signInForm.get('roleId').value === 2 ? 'primary' : undefined"
+                        (click)="selectUserType('teacher')">
+                        Sou Professor
+                    </button>
+                </div>
                 <!-- Campo de email -->
                 <mat-form-field class="w-full">
                     <mat-label>Endereço de e-mail</mat-label>
                     <input id="email" matInput [formControlName]="'email'" />
                     @if (signInForm.get('email').hasError('required')) {
-                        <mat-error> O endereço de e-mail é obrigatório </mat-error>
+                    <mat-error> O endereço de e-mail é obrigatório </mat-error>
                     }
                     @if (signInForm.get('email').hasError('email')) {
-                        <mat-error>
-                            Por favor, insira um endereço de e-mail válido
-                        </mat-error>
+                    <mat-error>
+                        Por favor, insira um endereço de e-mail válido
+                    </mat-error>
                     }
                 </mat-form-field>
 
                 <!-- Campo de senha -->
                 <mat-form-field class="w-full">
                     <mat-label>Senha</mat-label>
-                    <input
-                        id="password"
-                        matInput
-                        type="password"
-                        [formControlName]="'password'"
-                        #passwordField
-                    />
-                    <button
-                        mat-icon-button
-                        type="button"
-                        (click)="
+                    <input id="password" matInput type="password" [formControlName]="'password'" #passwordField />
+                    <button mat-icon-button type="button" (click)="
                             passwordField.type === 'password'
                                 ? (passwordField.type = 'text')
                                 : (passwordField.type = 'password')
-                        "
-                        matSuffix
-                    >
+                        " matSuffix>
                         @if (passwordField.type === 'password') {
-                            <mat-icon
-                                class="icon-size-5"
-                                [svgIcon]="'heroicons_solid:eye'"
-                            ></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:eye'"></mat-icon>
                         }
                         @if (passwordField.type === 'text') {
-                            <mat-icon
-                                class="icon-size-5"
-                                [svgIcon]="'heroicons_solid:eye-slash'"
-                            ></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
                         }
                     </button>
                     <mat-error> A senha é obrigatória </mat-error>
                 </mat-form-field>
 
                 <!-- Ações -->
-                <div
-                    class="mt-1.5 inline-flex w-full items-center justify-between"
-                >
-                    <mat-checkbox
-                        class="-ml-2"
-                        [color]="'primary'"
-                        [formControlName]="'rememberMe'"
-                    >
+                <div class="mt-1.5 inline-flex w-full items-center justify-between">
+                    <mat-checkbox class="-ml-2" [color]="'primary'" [formControlName]="'rememberMe'">
                         Lembrar-me
                     </mat-checkbox>
-                    <a
-                        class="text-md font-medium text-primary-500 hover:underline"
-                        [routerLink]="['/forgot-password']"
-                        >Esqueceu a senha?
+                    <a class="text-md font-medium text-primary-500 hover:underline"
+                        [routerLink]="['/forgot-password']">Esqueceu a senha?
                     </a>
                 </div>
 
                 <!-- Botão de envio -->
-                <button
-                    class="fuse-mat-button-large mt-6 w-full"
-                    mat-flat-button
-                    [color]="'primary'"
-                    [disabled]="signInForm.disabled"
-                    (click)="signIn()"
-                >
+                <button class="fuse-mat-button-large mt-6 w-full" mat-flat-button [color]="'primary'"
+                    [disabled]="signInForm.disabled" (click)="signIn()">
                     @if (!signInForm.disabled) {
-                        <span> Entrar </span>
+                    <span> Entrar </span>
                     }
                     @if (signInForm.disabled) {
-                        <mat-progress-spinner
-                            [diameter]="24"
-                            [mode]="'indeterminate'"
-                        ></mat-progress-spinner>
+                    <mat-progress-spinner [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
                     }
                 </button>
             </form>

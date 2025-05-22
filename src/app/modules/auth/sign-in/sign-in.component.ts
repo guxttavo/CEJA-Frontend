@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
     FormsModule,
     NgForm,
@@ -35,6 +36,7 @@ import { AuthService } from 'app/core/auth/auth.service';
         MatIconModule,
         MatCheckboxModule,
         MatProgressSpinnerModule,
+        CommonModule
     ],
 })
 export class AuthSignInComponent implements OnInit {
@@ -46,23 +48,28 @@ export class AuthSignInComponent implements OnInit {
     };
     signInForm: UntypedFormGroup;
     showAlert: boolean = false;
+    selectedRole: 'student' | 'teacher' | null = null;
 
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _authService: AuthService,
         private _formBuilder: UntypedFormBuilder,
         private _router: Router
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.signInForm = this._formBuilder.group({
-            email: [
-                '',
-                [Validators.required, Validators.email],
-            ],
+            email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required],
             rememberMe: [false],
+            roleId: [null, Validators.required] // Novo campo
         });
+    }
+
+    selectUserType(type: 'student' | 'teacher'): void {
+        const roleId = type === 'student' ? 3 : 2;
+        this.signInForm.get('roleId')?.setValue(roleId);
+        this.selectedRole = type;
     }
 
     signIn(): void {
@@ -70,24 +77,23 @@ export class AuthSignInComponent implements OnInit {
             return;
         }
 
-        this.signInForm.disable();
-        this.showAlert = false;
+        const credentials = this.signInForm.value;
 
-        this._authService.signIn(this.signInForm.value).subscribe(
+        this._authService.signIn({
+            email: credentials.email,
+            password: credentials.password,
+            rememberMe: credentials.rememberMe ?? false,
+            roleId: credentials.roleId
+        }).subscribe(
             () => {
-                const redirectURL =
-                    this._activatedRoute.snapshot.queryParamMap.get(
-                        'redirectURL'
-                    ) || '/signed-in-redirect';
-
-                this._router.navigateByUrl(redirectURL);
+                // Sucesso: redireciona para o dashboard
+                this._router.navigateByUrl('/dashboard'); // ou outra rota
             },
-            (response) => {
-                this.signInForm.enable();
-                this.signInNgForm.resetForm();
+            (error) => {
+                // Erro: exibe mensagem
                 this.alert = {
                     type: 'error',
-                    message: 'Email ou senha inválidos!',
+                    message: error || 'Erro ao realizar login.'
                 };
                 this.showAlert = true;
             }

@@ -66,7 +66,6 @@ export class AuthSignUpComponent implements OnInit {
             roleId: [null, Validators.required],
             avatar: [''],
         });
-
     }
 
     selectUserType(type: 'student' | 'teacher'): void {
