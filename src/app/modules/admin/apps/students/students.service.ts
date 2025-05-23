@@ -47,7 +47,7 @@ export class StudentsService extends BaseHttpService {
         );
     }
 
-    getAlunoById(id: number): Observable<Student> {
+    getStudentById(id: number): Observable<Student> {
         return this._httpClient.get<Student>(`${this.apiUrl}/student/${id}`).pipe(
             tap(aluno => this._aluno.next(aluno)),
             catchError(error => {

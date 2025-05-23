@@ -7,15 +7,15 @@ import {
 } from '@angular/router';
 import { StudentsComponent } from 'app/modules/admin/apps/students/students.component';
 import { StudentsService } from 'app/modules/admin/apps/students/students.service';
-import { AlunosDetailsComponent } from 'app/modules/admin/apps/students/details/details.component';
-import { AlunosListComponent } from 'app/modules/admin/apps/students/list/list.component';
+import { AlunosDetailsComponent } from 'app/modules/admin/apps/students/details/studentsDetails.component';
+import { AlunosListComponent } from 'app/modules/admin/apps/students/list/studentsList.component';
 import { catchError, throwError } from 'rxjs';
 
-const alunoResolver = (
+const studentResolver = (
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
 ) => {
-    const alunosService = inject(StudentsService);
+    const studentService = inject(StudentsService);
     const router = inject(Router);
 
     const idParam = route.paramMap.get('id');
@@ -26,7 +26,7 @@ const alunoResolver = (
         return throwError(() => new Error('ID inválido'));
     }
 
-    return alunosService.getAlunoById(id).pipe(
+    return studentService.getStudentById(id).pipe(
         catchError((error) => {
             console.error(error);
             const parentUrl = state.url.split('/').slice(0, -1).join('/');
@@ -38,15 +38,7 @@ const alunoResolver = (
     );
 };
 
-/**
- * Can deactivate alunos details
- *
- * @param component
- * @param currentRoute
- * @param currentState
- * @param nextState
- */
-const canDeactivateAlunosDetails = (
+const canDeactivateStudentDetails = (
     component: AlunosDetailsComponent,
     currentRoute: ActivatedRouteSnapshot,
     currentState: RouterStateSnapshot,
@@ -94,9 +86,9 @@ export default [
                         path: ':id',
                         component: AlunosDetailsComponent,
                         resolve: {
-                            alunos: alunoResolver
+                            alunos: studentResolver
                         },
-                        canDeactivate: [canDeactivateAlunosDetails],
+                        canDeactivate: [canDeactivateStudentDetails],
                         runGuardsAndResolvers: 'paramsChange' 
                     },
                 ],

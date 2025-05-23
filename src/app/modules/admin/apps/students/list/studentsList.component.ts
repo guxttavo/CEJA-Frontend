@@ -31,7 +31,7 @@ import { Turma } from '../../shared/turma.types';
 
 @Component({
     selector: 'alunos-list',
-    templateUrl: './list.component.html',
+    templateUrl: './studentsList.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
@@ -55,6 +55,9 @@ import { Turma } from '../../shared/turma.types';
     ],
 })
 export class AlunosListComponent implements OnInit, OnDestroy {
+onFilterChange(arg0: any) {
+throw new Error('Method not implemented.');
+}
     @ViewChild('matDrawer', { static: true }) matDrawer: MatDrawer;
 
     alunos$: Observable<Student[]>;

@@ -31,13 +31,13 @@ import { Subject, takeUntil } from 'rxjs';
 
 import { StudentsService } from '../students.service';
 import { Student } from '../../shared/student.types';
-import { AlunosListComponent } from '../list/list.component';
+import { AlunosListComponent } from '../list/studentsList.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 
 @Component({
     selector: 'alunos-details',
-    templateUrl: './details.component.html',
+    templateUrl: './studentsDetails.component.html',
     standalone: true,
     imports: [
         RouterLink,
@@ -128,7 +128,7 @@ export class AlunosDetailsComponent implements OnInit, OnDestroy {
         const aluno = this.alunoForm.getRawValue();
     
         this._studentsService.updateAluno(aluno.id, aluno).subscribe(() => {
-            this._studentsService.getAlunoById(aluno.id).subscribe(() => {
+            this._studentsService.getStudentById(aluno.id).subscribe(() => {
                 this.toggleEditMode(false);
                 this._changeDetectorRef.markForCheck();
             });
