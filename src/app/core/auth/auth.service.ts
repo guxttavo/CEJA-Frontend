@@ -29,6 +29,8 @@ export class AuthService extends BaseHttpService {
             switchMap((response: any) => {
                 this.rememberMe = credentials.rememberMe;
                 localStorage.setItem('rememberMe', String(this.rememberMe));
+                localStorage.setItem('roleId', String(credentials.roleId));
+
                 this.accessToken = response.token;
                 this._authenticated = true;
                 this._userService.user = response.user;
@@ -40,6 +42,27 @@ export class AuthService extends BaseHttpService {
         );
     }
 
+    signInUsingToken(): Observable<any> {
+        if (!this.rememberMe) {
+            return of(false);
+        }
+
+        return this._httpClient
+            .post(`${this.apiUrl}/auth/sign-in-with-token`, {
+                accessToken: this.accessToken
+            })
+            .pipe(
+                catchError(() => {
+                    this.signOut();
+                    return of(false);
+                }),
+                switchMap((response: any) => {
+                    this._authenticated = true;
+                    this._userService.user = response.user;
+                    return of(true);
+                })
+            );
+    }
 
     signUpStudent(student: Student): Observable<any> {
         return this._httpClient.post(`${this.apiUrl}/student`, student).pipe(
@@ -92,35 +115,15 @@ export class AuthService extends BaseHttpService {
         return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken') || '';
     }
 
-    signInUsingToken(): Observable<any> {
-        if (!this.rememberMe) {
-            return of(false); // Não renova o token se rememberMe for false
-        }
-
-        return this._httpClient
-            .post(`${this.apiUrl}/auth/sign-in-with-token`, {
-                accessToken: this.accessToken
-            })
-            .pipe(
-                catchError(() => {
-                    this.signOut(); // Desconecta o usuário em caso de erro
-                    return of(false);
-                }),
-                switchMap((response: any) => {
-                    this._authenticated = true;
-                    this._userService.user = response.user;
-                    return of(true);
-                })
-            );
-    }
-
     signOut(): Observable<any> {
         localStorage.removeItem('accessToken');
         sessionStorage.removeItem('accessToken');
         localStorage.removeItem('rememberMe');
+        localStorage.removeItem('roleId');
         this._authenticated = false;
         return of(true);
     }
+
 
     unlockSession(credentials: { email: string; password: string }): Observable<any> {
         return this._httpClient.post('api/auth/unlock-session', credentials);

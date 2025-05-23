@@ -62,7 +62,7 @@ export class AuthSignInComponent implements OnInit {
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required],
             rememberMe: [false],
-            roleId: [1, Validators.required] 
+            roleId: [1, Validators.required]
         });
     }
 
@@ -78,7 +78,7 @@ export class AuthSignInComponent implements OnInit {
         }
 
         if (!this.signInForm.get('roleId')?.value) {
-            this.signInForm.get('roleId')?.setValue(1); 
+            this.signInForm.get('roleId')?.setValue(1);
         }
 
         const credentials = this.signInForm.value;
@@ -92,11 +92,27 @@ export class AuthSignInComponent implements OnInit {
             () => {
                 const role = credentials.roleId;
                 if (role === 3) {
-                    this._router.navigate(['/student/dashboard']);
+                    const redirectURL =
+                        this._activatedRoute.snapshot.queryParamMap.get(
+                            'redirectURL'
+                        ) || '/admin/turmas';
+
+                    this._router.navigateByUrl(redirectURL);
+
                 } else if (role === 2) {
-                    this._router.navigate(['/teacher/dashboard']);
+                    const redirectURL =
+                        this._activatedRoute.snapshot.queryParamMap.get(
+                            'redirectURL'
+                        ) || '/admin/alunos';
+
+                    this._router.navigateByUrl(redirectURL);
                 } else {
-                    this._router.navigate(['/admin/dashboard']);
+                    const redirectURL =
+                        this._activatedRoute.snapshot.queryParamMap.get(
+                            'redirectURL'
+                        ) || '/signed-in-redirect';
+
+                    this._router.navigateByUrl(redirectURL);
                 }
             },
             (error) => {

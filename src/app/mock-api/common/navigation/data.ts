@@ -1,28 +1,12 @@
 import { FuseNavigationItem } from '@fuse/components/navigation';
-import { jwtDecode } from 'jwt-decode';
-
-interface TokenPayload {
-    email: string;
-    roleId: string;
-    exp: number;
-}
 
 function getRoleId(): string | null {
-    try {
-        const token = localStorage.getItem('accessToken');
-        if (!token) return null;
-        const decoded = jwtDecode<TokenPayload>(token);
-        return decoded.roleId;
-    } catch (e) {
-        console.error('Erro ao decodificar o token:', e);
-        return null;
-    }
+    return localStorage.getItem('roleId');
 }
 
 const roleId = getRoleId();
 
 export const defaultNavigation: FuseNavigationItem[] = [];
-
 
 if (roleId === '1') {
     defaultNavigation.push({
