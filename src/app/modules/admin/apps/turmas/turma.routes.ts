@@ -8,8 +8,8 @@ import {
 import { TurmasComponent } from 'app/modules/admin/apps/turmas/turmas.component';
 import { TurmaService } from 'app/modules/admin/apps/turmas/turma.service';
 // import { TurmasDetailsComponent } from 'app/modules/admin/apps/alunos/details/details.component';
-import { TurmaListComponent } from 'app/modules/admin/apps/turmas/listar/turmaList.component';
 import { catchError, throwError } from 'rxjs';
+import { ClassListComponent } from './list/classList.component';
 
 const turmaResolver = (
     route: ActivatedRouteSnapshot,
@@ -73,7 +73,7 @@ export default [
         children: [
             {
                 path: '',
-                component: TurmaListComponent
+                component: ClassListComponent
             }
         ]
     },

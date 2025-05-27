@@ -15,9 +15,8 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms';
-import { NotaService } from '../notas/notas.service';
 import { MatDialog } from '@angular/material/dialog';
-import { NotasDialogComponent } from '../notas/notas.component'; 
+import { NotasDialogComponent } from '../grades/notas.component'; 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { DatePipe, NgClass, NgIf, NgForOf } from '@angular/common';
@@ -34,6 +33,8 @@ import { Student } from '../../shared/student.types';
 import { AlunosListComponent } from '../list/studentsList.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { GradeService } from '../../grades/grades.service';
+import { GradesComponent } from '../../grades/grades.component';
 
 @Component({
     selector: 'alunos-details',
@@ -79,7 +80,7 @@ export class AlunosDetailsComponent implements OnInit, OnDestroy {
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
         private _dialog: MatDialog,
-        private _notaService: NotaService
+        private _gradeService: GradeService
     ) { }
 
     ngOnInit(): void {
@@ -136,13 +137,9 @@ export class AlunosDetailsComponent implements OnInit, OnDestroy {
     }
     
     verNotas(): void {
-        this._notaService.getGradeStudent(this.aluno.id).subscribe((notas) => {
-            this._dialog.open(NotasDialogComponent, {
-                width: '500px',
-                data: {
-                    name: this.aluno.name,
-                    notas: notas
-                }
+        this._gradeService.getGradeBySubjectOfStudent(this.aluno.id).subscribe((notas) => {
+            this._dialog.open(GradesComponent, {
+                width: '500px'
             });
         });
     }

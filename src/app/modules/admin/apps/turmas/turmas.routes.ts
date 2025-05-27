@@ -8,7 +8,7 @@ import {
 import { TurmasComponent } from 'app/modules/admin/apps/turmas/turmas.component';
 import { TurmasService } from 'app/modules/admin/apps/turmas/turmas.service';
 import { TurmasDetailsComponent } from 'app/modules/admin/apps/turmas/details/details.component';
-import { TurmasListComponent } from 'app/modules/admin/apps/turmas/list/list.component';
+import { ClassListComponent } from 'app/modules/admin/apps/turmas/list/classList.component';
 import { catchError, throwError } from 'rxjs';
 
 const turmaResolver = (
@@ -36,7 +36,7 @@ export default [
             {
                 path: '',
                 pathMatch: 'full',
-                component: TurmasListComponent,
+                component: ClassListComponent,
                 resolve: {
                     turmas: () => inject(TurmasService).getTurmas(),
                 },

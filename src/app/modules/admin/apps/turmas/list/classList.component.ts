@@ -31,7 +31,7 @@ import { Turma } from '../../shared/turma.types';
 
 @Component({
     selector: 'turmas-list',
-    templateUrl: './list.component.html',
+    templateUrl: './classList.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
@@ -53,7 +53,7 @@ import { Turma } from '../../shared/turma.types';
         I18nPluralPipe,
     ],
 })
-export class TurmasListComponent implements OnInit, OnDestroy {
+export class ClassListComponent implements OnInit, OnDestroy {
     turmas: Turma[] = [];
     filteredTurmas: Turma[] = [];
     filters = {

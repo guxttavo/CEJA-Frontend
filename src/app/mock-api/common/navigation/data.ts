@@ -8,8 +8,27 @@ const roleId = getRoleId();
 
 export const defaultNavigation: FuseNavigationItem[] = [];
 
-if (roleId === '1') {
-    defaultNavigation.push({
+// if (roleId === '1') {
+//     defaultNavigation.push({
+//         id: 'admin',
+//         title: 'Administração',
+//         subtitle: 'Gerencie seus principais recursos',
+//         type: 'group',
+//         icon: 'heroicons_outline:home',
+//         children: [
+//             {
+//                 id: 'navigation-features.level.0.1-1-with-subtitle',
+//                 title: 'Aprovação de Professores',
+//                 type: 'basic',
+//                 icon: 'heroicons_outline:user-group',
+//                 link: '/admin/teacher',
+//             },
+//         ]
+//     });
+// }
+
+defaultNavigation.push(
+    {
         id: 'admin',
         title: 'Administração',
         subtitle: 'Gerencie seus principais recursos',
@@ -24,10 +43,7 @@ if (roleId === '1') {
                 link: '/admin/teacher',
             },
         ]
-    });
-}
-
-defaultNavigation.push(
+    },
     {
         id: 'dashboards',
         title: 'Dashboards',
