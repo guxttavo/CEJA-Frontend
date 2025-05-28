@@ -1,4 +1,6 @@
 export interface Grade {
-    disciplina: string;
-    valor: number;
+    id: number;
+    gradeValue: number;
+    studentName: string;
+    subjectName: string;
 }

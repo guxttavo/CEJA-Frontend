@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { NgIf, NgForOf } from '@angular/common';
 
@@ -7,6 +7,7 @@ import { NgIf, NgForOf } from '@angular/common';
   selector: 'app-grades',
   standalone: true,
   imports: [
+    MatDialogModule,
     MatTableModule,
     NgIf,
     NgForOf

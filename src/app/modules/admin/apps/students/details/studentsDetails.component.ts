@@ -16,7 +16,6 @@ import {
     ReactiveFormsModule,
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { NotasDialogComponent } from '../grades/notas.component'; 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { DatePipe, NgClass, NgIf, NgForOf } from '@angular/common';
@@ -127,7 +126,7 @@ export class AlunosDetailsComponent implements OnInit, OnDestroy {
 
     updateAluno(): void {
         const aluno = this.alunoForm.getRawValue();
-    
+
         this._studentsService.updateAluno(aluno.id, aluno).subscribe(() => {
             this._studentsService.getStudentById(aluno.id).subscribe(() => {
                 this.toggleEditMode(false);
@@ -135,15 +134,29 @@ export class AlunosDetailsComponent implements OnInit, OnDestroy {
             });
         });
     }
-    
+
     verNotas(): void {
-        this._gradeService.getGradeBySubjectOfStudent(this.aluno.id).subscribe((notas) => {
-            this._dialog.open(GradesComponent, {
-                width: '500px'
-            });
+        this._gradeService.getGradeBySubjectOfStudent(this.aluno.id).subscribe({
+            next: (notas) => {
+                const notasFormatadas = notas.map(nota => ({
+                    disciplina: nota.subjectName,
+                    valor: nota.gradeValue
+                }));
+
+                this._dialog.open(GradesComponent, {
+                    width: '500px',
+                    data: {
+                        name: this.aluno.name,
+                        notas: notasFormatadas
+                    }
+                });
+            },
+            error: (err) => {
+                console.error('Erro ao buscar notas do aluno:', err);
+            }
         });
     }
-    
+
     deleteAluno(): void {
         const id = this.aluno.id;
         this._studentsService.deleteAluno(id).subscribe(() => {
