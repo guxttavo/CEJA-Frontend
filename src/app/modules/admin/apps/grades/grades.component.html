@@ -15,6 +15,7 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
     </mat-dialog-content>
-    <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close>Fechar</button>
-    </mat-dialog-actions>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="gerarCertificado()">Gerar Certificado</button>
+    <button mat-button mat-dialog-close>Fechar</button>
+</mat-dialog-actions>
